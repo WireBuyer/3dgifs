@@ -1,0 +1,46 @@
+import p5 from "p5";
+import Scene from "./scene";
+import { AnimationSystem } from "../AnimationSystem";
+import { SceneSettings, ObjectSettings } from "./types";
+
+interface CubeObjectSettings extends ObjectSettings {
+  radius: number;
+}
+
+interface CubeSceneSettings extends SceneSettings {
+  objects: {
+    cube: CubeObjectSettings;
+  };
+}
+
+export default class CubeScene extends Scene<CubeSceneSettings> {
+  // update this so each param is an object with min/max or other values for the ui to use
+  getDefaultSettings(): CubeSceneSettings {
+    const cubeObject: CubeObjectSettings = {
+      axes: {
+        x: "off",
+        y: "rotate",
+        z: "wobble",
+      },
+      radius: 10,
+    };
+
+    const defaults: CubeSceneSettings = {
+      objects: {
+        cube: cubeObject,
+      },
+      scene: { camera: [0, 0, 0] },
+    };
+    return defaults;
+  }
+
+  draw(p: p5, progress: number): void {
+    AnimationSystem.applyCommonObjectAnimations(
+      p,
+      progress,
+      this.settings.objects.cube
+    );
+
+    p.box(150);
+  }
+}
