@@ -1,7 +1,6 @@
 import p5 from "p5";
-import Scene from "./scene";
-import { AnimationSystem } from "../AnimationSystem";
-import { SceneSettings, ObjectSettings } from "./types";
+import Scene from "../core/scene";
+import { SceneSettings, ObjectSettings } from "../core/types";
 
 interface PlanetObjectSettings extends ObjectSettings {
   radius: number;
@@ -33,18 +32,12 @@ export default class PlanetScene extends Scene<PlanetSceneSettings> {
         planet: planetObject,
         moon: moonObject,
       },
-      scene: { camera: [0, 0, 0] },
+      scene: { cameraPos: [0, 0, 0], zoomInOut: false },
     };
     return defaults;
   }
 
   draw(p: p5, progress: number): void {
-    // AnimationSystem.applyCommonObjectAnimations(
-    //   p,
-    //   progress,
-    //   this.settings.objects.planet
-    // );
-
     // planet
     p.push();
     p.sphere(60);

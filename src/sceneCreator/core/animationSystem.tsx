@@ -1,5 +1,5 @@
 import p5 from "p5";
-import { Axes, ObjectSettings } from "./scenes/types";
+import { ObjectSettings, Axes } from "./types";
 
 export class AnimationSystem {
   static applyCommonObjectAnimations(

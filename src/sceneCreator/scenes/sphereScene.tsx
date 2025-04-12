@@ -1,7 +1,7 @@
 import p5 from "p5";
-import Scene from "./scene";
-import { AnimationSystem } from "../AnimationSystem";
-import { SceneSettings, ObjectSettings } from "./types";
+import Scene from "../core/scene";
+import { AnimationSystem } from "../core/animationSystem";
+import { SceneSettings, ObjectSettings } from "../core/types";
 
 interface SphereObjectSettings extends ObjectSettings {
   radius: number;
@@ -29,7 +29,7 @@ export default class SphereScene extends Scene<SphereSceneSettings> {
       objects: {
         sphere: sphereObject,
       },
-      scene: { camera: [0, 0, 0] },
+      scene: { cameraPos: [0, 0, 0], zoomInOut: false },
     };
     return defaults;
   }

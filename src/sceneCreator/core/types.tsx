@@ -16,6 +16,8 @@ export interface SceneSettings {
     [objects: string]: ObjectSettings;
   };
   scene: {
-    camera: [number, number, number];
+    // camera will be changed to include preset angles
+    cameraPos: [number, number, number];
+    zoomInOut: boolean;
   };
 }

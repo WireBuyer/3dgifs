@@ -1,17 +1,18 @@
 import p5 from "p5";
 import { useRef, useEffect, useState } from "react";
 import "@mantine/core/styles.css";
-import { Center, Grid, Select } from "@mantine/core";
-import SphereScene from "./sceneCreator/scenes/SpehereScene";
+import { Grid, Select } from "@mantine/core";
+import SphereScene from "./sceneCreator/scenes/sphereScene";
 import CubeScene from "./sceneCreator/scenes/CubeScene";
-import Scene from "./sceneCreator/scenes/scene";
-import { sceneList } from "./sceneCreator/SceneList";
-import PlanetScene from "./sceneCreator/scenes/Planet";
+import Scene from "./sceneCreator/core/scene";
+import { sceneList } from "./sceneCreator/scenes/sceneList";
+import PlanetScene from "./sceneCreator/scenes/planetScene";
+import SettingsDisplay from "./sceneCreator/ui/SettingsDisplay";
+import { SceneSettings } from "./sceneCreator/core/types";
 
 function App() {
   const scenes = Object.keys(sceneList);
   const [sceneSelection, setSceneSelection] = useState(scenes[0]);
-
   // consider making a type for this
   const sceneRef = useRef<Scene<unknown> | null>(null);
   const previewRef = useRef<HTMLDivElement>(null);
@@ -70,18 +71,23 @@ function App() {
   };
 
   return (
-    <Grid h="100vh" gutter="md">
+    <Grid h="100vh" gutter="md" style={{ minWidth: "1200px" }}>
       <Grid.Col span={4}>
         <div ref={previewRef}></div>
       </Grid.Col>
       <Grid.Col span={8}>
-        <Center>
-          <Select
-            data={scenes}
-            value={sceneSelection}
-            onChange={handleSceneChange}
+        <Select
+          data={scenes}
+          value={sceneSelection}
+          onChange={handleSceneChange}
+        />
+
+        {/* {JSON.stringify(sceneRef.current?.getDefaultSettings(), null, 2)} */}
+        {sceneRef.current && (
+          <SettingsDisplay
+            sceneSettings={sceneRef.current.settings as SceneSettings}
           />
-        </Center>
+        )}
       </Grid.Col>
     </Grid>
   );
