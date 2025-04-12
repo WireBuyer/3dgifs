@@ -3,7 +3,7 @@ import { useRef, useEffect, useState } from "react";
 import "@mantine/core/styles.css";
 import { Grid, Select } from "@mantine/core";
 import SphereScene from "./sceneCreator/scenes/sphereScene";
-import CubeScene from "./sceneCreator/scenes/CubeScene";
+import CubeScene from "./sceneCreator/scenes/cubeScene";
 import Scene from "./sceneCreator/core/scene";
 import { sceneList } from "./sceneCreator/scenes/sceneList";
 import PlanetScene from "./sceneCreator/scenes/planetScene";
