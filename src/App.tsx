@@ -2,11 +2,8 @@ import p5 from "p5";
 import { useRef, useEffect, useState } from "react";
 import "@mantine/core/styles.css";
 import { Grid, Select } from "@mantine/core";
-import SphereScene from "./sceneCreator/scenes/sphereScene";
-import CubeScene from "./sceneCreator/scenes/cubeScene";
 import Scene from "./sceneCreator/core/scene";
-import { sceneList } from "./sceneCreator/scenes/sceneList";
-import PlanetScene from "./sceneCreator/scenes/planetScene";
+import { getScene, sceneList } from "./sceneCreator/scenes/sceneList";
 import SettingsDisplay from "./sceneCreator/ui/SettingsDisplay";
 import { SceneSettings } from "./sceneCreator/core/types";
 
@@ -15,24 +12,12 @@ function App() {
   const [sceneSelection, setSceneSelection] = useState(scenes[0]);
 
   // consider making a type for this
-  const [currentScene, setCurrentScene] = useState<Scene<unknown> | null>(null);
+  const [currentScene, setCurrentScene] = useState<Scene<unknown>>(() => {
+    return getScene(sceneSelection);
+  });
   const previewRef = useRef<HTMLDivElement>(null);
 
-  // temp function, move to another file and use registry
-  const getScene = (value: string): Scene<unknown> => {
-    if (value.toLowerCase() === "sphere") {
-      return new SphereScene();
-    } else if (value.toLowerCase() === "cube") {
-      return new CubeScene();
-    } else {
-      return new PlanetScene();
-    }
-  };
-
   useEffect(() => {
-    const scene = getScene(sceneSelection);
-    setCurrentScene(scene);
-
     // move these to the scenes
     let texture: p5.Image;
     const fps = 25;
@@ -56,7 +41,7 @@ function App() {
 
         const progress = ((p.frameCount - 1) % totalFrames) / totalFrames;
         // p.texture(texture);
-        scene.draw(p, progress);
+        currentScene.draw(p, progress);
       };
     };
 
@@ -65,11 +50,12 @@ function App() {
     return () => {
       p5Sketch.remove();
     };
-  }, [sceneSelection]);
+  }, [currentScene]);
 
   const handleSceneChange = (value: string | null) => {
     if (value == null) return;
     setSceneSelection(value);
+    setCurrentScene(getScene(value));
   };
 
   return (
