@@ -13,8 +13,9 @@ import { SceneSettings } from "./sceneCreator/core/types";
 function App() {
   const scenes = Object.keys(sceneList);
   const [sceneSelection, setSceneSelection] = useState(scenes[0]);
+
   // consider making a type for this
-  const sceneRef = useRef<Scene<unknown> | null>(null);
+  const [currentScene, setCurrentScene] = useState<Scene<unknown> | null>(null);
   const previewRef = useRef<HTMLDivElement>(null);
 
   // temp function, move to another file and use registry
@@ -29,7 +30,8 @@ function App() {
   };
 
   useEffect(() => {
-    sceneRef.current = getScene(sceneSelection);
+    const scene = getScene(sceneSelection);
+    setCurrentScene(scene);
 
     // move these to the scenes
     let texture: p5.Image;
@@ -54,7 +56,7 @@ function App() {
 
         const progress = ((p.frameCount - 1) % totalFrames) / totalFrames;
         // p.texture(texture);
-        sceneRef.current!.draw(p, progress);
+        scene.draw(p, progress);
       };
     };
 
@@ -81,11 +83,9 @@ function App() {
           value={sceneSelection}
           onChange={handleSceneChange}
         />
-
-        {/* {JSON.stringify(sceneRef.current?.getDefaultSettings(), null, 2)} */}
-        {sceneRef.current && (
+        {currentScene && (
           <SettingsDisplay
-            sceneSettings={sceneRef.current.settings as SceneSettings}
+            sceneSettings={currentScene.settings as SceneSettings}
           />
         )}
       </Grid.Col>
