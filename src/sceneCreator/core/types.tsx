@@ -11,10 +11,11 @@ export interface ObjectSettings {
   axes?: Axes;
 }
 
+export type SceneObjects = Record<string, ObjectSettings>;
+
 export interface SceneSettings {
-  objects: {
-    [objects: string]: ObjectSettings;
-  };
+  objects: SceneObjects;
+  // rename scene to something better
   scene: {
     // camera will be changed to include preset angles
     cameraPos: [number, number, number];
