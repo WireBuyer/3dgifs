@@ -4,7 +4,7 @@ import { AnimationSystem } from "../core/animationSystem";
 import { SceneSettings, ObjectSettings } from "../core/types";
 
 interface CubeObjectSettings extends ObjectSettings {
-  radius: number;
+  size: number;
 }
 
 interface CubeSceneSettings extends SceneSettings {
@@ -22,7 +22,7 @@ export default class CubeScene extends Scene<CubeSceneSettings> {
         y: "rotate",
         z: "wobble",
       },
-      radius: 10,
+      size: 10,
     };
 
     const defaults: CubeSceneSettings = {

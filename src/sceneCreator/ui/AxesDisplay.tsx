@@ -1,16 +1,20 @@
 import { Box, Group, SegmentedControl, Text } from "@mantine/core";
+import { SceneSettings } from "../core/types";
 // import { updateSceneSetting } from "./updateSceneSetting";
 
 export default function AxesDisplay({
   objectName,
   settingValue,
   basePath,
-  updateSceneSetting,
+  handleSceneSettingUpdate,
 }: {
   objectName: string;
   settingValue: string;
   basePath: string[];
-  updateSceneSetting: (path: string[], value: unknown) => void;
+  handleSceneSettingUpdate: (
+    path: [keyof SceneSettings, ...string[]],
+    value: unknown
+  ) => void;
 }) {
   const movementOptions = [
     { value: "off", label: "Off" },
@@ -22,14 +26,19 @@ export default function AxesDisplay({
     <Box p={"xs"}>
       {Object.entries(settingValue).map(([axis, movement]) => {
         return (
-          <Group key={`${objectName}-${axis}`}>
-            <Text style={{ textTransform: "capitalize" }}>{axis}</Text>
+          <Group key={`${objectName}-${axis}`} gap={"xs"} p={4}>
+            <Text fw={500} style={{ textTransform: "capitalize" }}>
+              {axis}
+            </Text>
             <SegmentedControl
               data={movementOptions}
               value={movement as string}
               onChange={(val) => {
                 const fullPath = [...basePath, axis];
-                updateSceneSetting(fullPath, val);
+                handleSceneSettingUpdate(
+                  fullPath as [keyof SceneSettings, ...string[]],
+                  val
+                );
                 // handleSettingChange(fullPath);
               }}
             />

@@ -6,6 +6,7 @@ import Scene from "./sceneCreator/core/scene";
 import { getScene, sceneList } from "./sceneCreator/scenes/sceneList";
 import SettingsDisplay from "./sceneCreator/ui/SettingsDisplay";
 import { SceneSettings } from "./sceneCreator/core/types";
+import { updateSceneSetting } from "./sceneCreator/ui/updateSceneSetting";
 
 function App() {
   const scenes = Object.keys(sceneList);
@@ -14,6 +15,10 @@ function App() {
   // consider making a type for this
   const [currentScene, setCurrentScene] = useState<Scene<unknown>>(() =>
     getScene(sceneSelection)
+  );
+
+  const [sceneSettings, setSceneSettings] = useState<SceneSettings>(
+    currentScene.settings as SceneSettings
   );
   const previewRef = useRef<HTMLDivElement>(null);
 
@@ -36,7 +41,7 @@ function App() {
       };
 
       p.draw = () => {
-        p.orbitControl();
+        p.orbitControl(5, 5, 5);
         p.background(20);
 
         const progress = ((p.frameCount - 1) % totalFrames) / totalFrames;
@@ -55,12 +60,22 @@ function App() {
 
   const handleSceneChange = (value: string | null) => {
     if (value == null) return;
+    const newScene = getScene(value);
     setSceneSelection(value);
-    setCurrentScene(getScene(value));
+    setCurrentScene(newScene);
+    setSceneSettings(newScene.settings as SceneSettings);
   };
 
-  const updateSceneSetting = (path: string[], value: unknown) => {
-    console.log(path, value);
+  const handleSceneSettingUpdate = (
+    path: [keyof SceneSettings, ...string[]],
+    value: unknown
+  ) => {
+    const updatedSettings = updateSceneSetting(
+      currentScene.settings as SceneSettings,
+      path,
+      value
+    );
+    setSceneSettings(updatedSettings);
   };
 
   return (
@@ -112,10 +127,12 @@ function App() {
             searchable
             nothingFoundMessage="Nothing found..."
           />
-          <SettingsDisplay
-            sceneSettings={currentScene.settings as SceneSettings}
-            updateSceneSetting={updateSceneSetting}
-          />
+          {currentScene && (
+            <SettingsDisplay
+              sceneSettings={sceneSettings}
+              handleSceneSettingUpdate={handleSceneSettingUpdate}
+            />
+          )}
         </Box>
       </Flex>
     </Box>

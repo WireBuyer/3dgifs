@@ -4,12 +4,15 @@ import ObjectSettingsDisplay from "./ObjectSettingsDisplay";
 
 interface SceneSettingsProps {
   sceneSettings: SceneSettings;
-  updateSceneSetting: (path: string[], value: unknown) => void;
+  handleSceneSettingUpdate: (
+    path: [keyof SceneSettings, ...string[]],
+    value: unknown
+  ) => void;
 }
 
 export default function SettingsDisplay({
   sceneSettings,
-  updateSceneSetting,
+  handleSceneSettingUpdate,
 }: SceneSettingsProps) {
   return (
     <Card p={25}>
@@ -17,7 +20,7 @@ export default function SettingsDisplay({
       <Card.Section>
         <ObjectSettingsDisplay
           sceneObjects={sceneSettings.objects}
-          updateSceneSetting={updateSceneSetting}
+          handleSceneSettingUpdate={handleSceneSettingUpdate}
         />
       </Card.Section>
     </Card>

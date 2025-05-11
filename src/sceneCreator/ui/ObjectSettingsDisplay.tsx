@@ -6,24 +6,21 @@ import {
   Title,
   Text,
 } from "@mantine/core";
-import { SceneObjects } from "../core/types";
+import { SceneObjects, SceneSettings } from "../core/types";
 import AxesDisplay from "./AxesDisplay";
-// import { updateSceneSetting } from "./updateSceneSetting";
 
 interface ObjectSettingsProps {
   sceneObjects: SceneObjects;
-  updateSceneSetting: (path: string[], value: unknown) => void;
+  handleSceneSettingUpdate: (
+    path: [keyof SceneSettings, ...string[]],
+    value: unknown
+  ) => void;
 }
 
 export default function ObjectSettingsDisplay({
   sceneObjects,
-  updateSceneSetting,
+  handleSceneSettingUpdate,
 }: ObjectSettingsProps) {
-  const movementOptions = [
-    { value: "off", label: "Off" },
-    { value: "rotate", label: "Rotate" },
-    { value: "wobble", label: "Wobble" },
-  ];
   let counter = 0;
 
   return (
@@ -48,7 +45,7 @@ export default function ObjectSettingsDisplay({
                       objectName={objectName}
                       settingValue={settingValue}
                       basePath={basePath}
-                      updateSceneSetting={updateSceneSetting}
+                      handleSceneSettingUpdate={handleSceneSettingUpdate}
                       key={`${objectName}-${settingName}`}
                     />
                   );
@@ -67,3 +64,15 @@ export default function ObjectSettingsDisplay({
     </Box>
   );
 }
+
+//     <Paper withBorder p="xs" radius="md">
+//       <Title order={5} mb="xs">
+//         General Settings
+//       </Title>
+//       <Group justify="space-between" wrap="nowrap">
+//         <Text size="sm">Zoom In/Out Effect</Text>
+//         <Switch checked={sceneSettings.scene.zoomInOut} size="sm" />
+//       </Group>
+//     </Paper>
+//   </Box>
+// </Card>
