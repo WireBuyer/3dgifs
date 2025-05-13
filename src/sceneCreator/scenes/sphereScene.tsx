@@ -29,7 +29,7 @@ export default class SphereScene extends Scene<SphereSceneSettings> {
       objects: {
         sphere: sphereObject,
       },
-      scene: { cameraPos: [0, 0, 0], zoomInOut: false },
+      general: { zoomInOut: false },
     };
     return defaults;
   }

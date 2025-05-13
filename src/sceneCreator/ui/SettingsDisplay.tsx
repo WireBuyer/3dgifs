@@ -1,6 +1,7 @@
 import { Card } from "@mantine/core";
 import { SceneSettings } from "../core/types";
 import ObjectSettingsDisplay from "./ObjectSettingsDisplay";
+import GeneralSettingsDisplay from "./GeneralSettingsDisplay";
 
 interface SceneSettingsProps {
   sceneSettings: SceneSettings;
@@ -16,10 +17,16 @@ export default function SettingsDisplay({
 }: SceneSettingsProps) {
   return (
     <Card p={25}>
-      {/* make a component for scene params or just make one component handle both */}
+      {/* TODO: refactor. this can be done in one component*/}
       <Card.Section>
         <ObjectSettingsDisplay
           sceneObjects={sceneSettings.objects}
+          handleSceneSettingUpdate={handleSceneSettingUpdate}
+        />
+      </Card.Section>
+      <Card.Section>
+        <GeneralSettingsDisplay
+          sceneSettings={sceneSettings.general}
           handleSceneSettingUpdate={handleSceneSettingUpdate}
         />
       </Card.Section>

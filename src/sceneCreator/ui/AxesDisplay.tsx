@@ -1,6 +1,5 @@
 import { Box, Group, SegmentedControl, Text } from "@mantine/core";
 import { SceneSettings } from "../core/types";
-// import { updateSceneSetting } from "./updateSceneSetting";
 
 export default function AxesDisplay({
   objectName,
@@ -39,7 +38,6 @@ export default function AxesDisplay({
                   fullPath as [keyof SceneSettings, ...string[]],
                   val
                 );
-                // handleSettingChange(fullPath);
               }}
             />
           </Group>

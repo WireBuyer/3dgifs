@@ -24,9 +24,11 @@ function App() {
 
   useEffect(() => {
     // move these to the scenes
-    let texture: p5.Image;
     const fps = 50;
     const totalFrames = 100;
+
+    let texture: p5.Image;
+    let camera: p5.Camera;
 
     const sketch = (p: p5) => {
       p.preload = () => {
@@ -38,14 +40,23 @@ function App() {
         p.frameRate(fps);
         p.noStroke();
         p.normalMaterial();
+        camera = p.createCamera();
       };
 
       p.draw = () => {
-        p.orbitControl(5, 5, 5);
+        p.orbitControl();
         p.background(20);
 
         const progress = ((p.frameCount - 1) % totalFrames) / totalFrames;
-        // p.texture(texture);
+        // const zoomAmount = p.map(
+        //   Math.sin(progress * p.TWO_PI),
+        //   -1,
+        //   1,
+        //   0.5,
+        //   1.5
+        // );
+        // p.scale(zoomAmount);
+
         currentScene.draw(p, progress);
         // tempdraw(p, progress, texture);
       };

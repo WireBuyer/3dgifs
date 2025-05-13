@@ -32,7 +32,7 @@ export default class PlanetScene extends Scene<PlanetSceneSettings> {
         planet: planetObject,
         moon: moonObject,
       },
-      scene: { cameraPos: [0, 0, 0], zoomInOut: false },
+      general: { zoomInOut: false },
     };
     return defaults;
   }

@@ -29,7 +29,7 @@ export default class CubeScene extends Scene<CubeSceneSettings> {
       objects: {
         cube: cubeObject,
       },
-      scene: { cameraPos: [0, 0, 0], zoomInOut: false },
+      general: { zoomInOut: false },
     };
     return defaults;
   }

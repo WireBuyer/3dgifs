@@ -13,12 +13,12 @@ export interface ObjectSettings {
 
 export type SceneObjects = Record<string, ObjectSettings>;
 
+export type GeneralSettings = {
+  zoomInOut: boolean;
+};
+
 export interface SceneSettings {
   objects: SceneObjects;
   // rename scene to something better
-  scene: {
-    // camera will be changed to include preset angles
-    cameraPos: [number, number, number];
-    zoomInOut: boolean;
-  };
+  general: GeneralSettings;
 }

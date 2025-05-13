@@ -2,6 +2,16 @@ import p5 from "p5";
 import { ObjectSettings, Axes } from "./types";
 
 export class AnimationSystem {
+  static applyCommonGeneralAnimations(
+    p: p5,
+    progress: number,
+    settings: { cameraPos: [number, number, number]; zoomInOut: boolean }
+  ): void {
+    if (settings.zoomInOut) {
+      this.applyCameraZoom(p, progress);
+    }
+  }
+
   static applyCommonObjectAnimations(
     p: p5,
     progress: number,
@@ -36,5 +46,19 @@ export class AnimationSystem {
         p.rotate(movementAngles[axismovement], vector);
       }
     });
+  }
+
+  static applyCameraZoom(p: p5, progress: number) {
+    // oscillates the zoom amount between 0.7x and 1.3x, consider getting user input
+    const minZoom = 0.7;
+    const maxZoom = 1.3;
+    const zoomAmount = p.map(
+      Math.sin(progress * p.TWO_PI),
+      -1,
+      1,
+      minZoom,
+      maxZoom
+    );
+    p.scale(zoomAmount);
   }
 }
