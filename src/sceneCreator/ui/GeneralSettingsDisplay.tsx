@@ -1,5 +1,16 @@
-import { Box, Checkbox, Group, Text, Title } from "@mantine/core";
+import {
+  Box,
+  Checkbox,
+  Group,
+  NumberInput,
+  SegmentedControl,
+  Stack,
+  Text,
+  Title,
+} from "@mantine/core";
 import { GeneralSettings, SceneSettings } from "../core/types";
+import { isZoomField } from "../core/fieldHelper";
+import ZoomDisplay from "./ZoomDisplay";
 
 interface GeneralSettingsProps {
   sceneSettings: GeneralSettings;
@@ -16,34 +27,24 @@ export default function GeneralSettingsDisplay({
 }: GeneralSettingsProps) {
   return (
     <Box>
-      <Title order={5} style={{ textTransform: "capitalize" }}>
+      <Title order={5} style={{ textTransform: "capitalize" }} pb={"sm"}>
         General Settings
       </Title>
 
-      {Object.entries(sceneSettings).map(([settingName, settingValue]) => {
+      {Object.entries(sceneSettings).map(([settingName, settingData]) => {
         const basePath: string[] = ["general"];
-        if (settingName === "zoomInOut") {
-          return (
-            <Group key={`${settingName}`} wrap="nowrap" mb="xs">
-              <Text size="sm" fw={500} style={{ textTransform: "capitalize" }}>
-                {settingName}
-              </Text>
-              <Checkbox
-                checked={settingValue}
-                onChange={(event) => {
-                  const fullPath = [...basePath];
-                  fullPath.push(settingName);
+        const key = `${basePath.toString()}-${settingName}`;
 
-                  handleSceneSettingUpdate(
-                    fullPath as [keyof SceneSettings, ...string[]],
-                    event.currentTarget.checked
-                  );
-                }}
-              />
-            </Group>
+        if (isZoomField(settingData)) {
+          const zoomPath = [...basePath, settingName];
+          return (
+            <ZoomDisplay
+              zoomData={settingData}
+              path={zoomPath}
+              handleSceneSettingUpdate={handleSceneSettingUpdate}
+              key={key}
+            />
           );
-        } else {
-          return <Box key={settingName}>{settingName}</Box>;
         }
       })}
     </Box>

@@ -1,6 +1,7 @@
 import p5 from "p5";
 
 export default abstract class Scene<T> {
+  // TODO: remove settings and handle it in the main app.tsx file
   settings: T;
 
   constructor() {
@@ -8,9 +9,6 @@ export default abstract class Scene<T> {
   }
 
   abstract getDefaultSettings(): T;
-
-  // add update
-  // add reset
 
   abstract draw(p: p5, progress: number): void;
 }

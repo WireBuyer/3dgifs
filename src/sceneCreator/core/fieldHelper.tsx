@@ -1,0 +1,109 @@
+import {
+  Fields,
+  AxesField,
+  CheckboxField,
+  SliderField,
+  TextureField,
+  Axes,
+  ZoomField,
+} from "./types";
+
+// type guards for the fields
+export function isAxesField(field: Fields): field is AxesField {
+  return field.type === "axes";
+}
+
+export function isCheckboxField(field: Fields): field is CheckboxField {
+  return field.type === "checkbox";
+}
+
+export function isSliderField(field: Fields): field is SliderField {
+  return field.type === "slider";
+}
+
+export function isTextureField(field: Fields): field is TextureField {
+  return field.type === "texture";
+}
+
+export function isZoomField(field: Fields): field is ZoomField {
+  return field.type === "zoom";
+}
+
+// helper functions to create fields
+/**
+ * Creates an axes field with the specified initial value.
+ * @param value - The initial value for the axes movement
+ */
+export function createAxesField(value: Axes): AxesField {
+  return {
+    type: "axes",
+    label: "Axes Movement",
+    value,
+  };
+}
+
+/**
+ * Creates a checkbox field with the specified parameters.
+ * @param label - The label for the checkbox field
+ * @param value - The initial value of the checkbox (true or false)
+ */
+export function createCheckboxField(
+  label: string,
+  value: boolean
+): CheckboxField {
+  return {
+    type: "checkbox",
+    label,
+    value,
+  };
+}
+
+/**
+ * Creates a slider field with the specified parameters.
+ * @param label - The label for the slider field
+ * @param value - The initial value of the slider
+ * @param min - The minimum value for the slider
+ * @param max - The maximum value for the slider
+ * @param step - The step value for the slider
+ */
+export function createSliderField(
+  label: string,
+  value: number,
+  min: number,
+  max: number,
+  step: number
+): SliderField {
+  return {
+    type: "slider",
+    label,
+    value,
+    min,
+    max,
+    step,
+  };
+}
+
+/**
+ * Creates a zoom field with default parameters.
+ * @param mode - The zoom mode, can be "in", "out", "both", or "none" (default is "none")
+ * @param minZoom - The minimum zoom level (default is 0.7)
+ * @param maxZoom - The maximum zoom level (default is 1.3)
+ * @param oscillations - The number of oscillations for the zoom effect (default is 1)
+ */
+export function createZoomField(
+  mode: "in" | "out" | "both" | "none" = "none",
+  minZoom: number = 0.7,
+  maxZoom: number = 1.3,
+  oscillations: number = 1
+): ZoomField {
+  return {
+    type: "zoom",
+    label: "Zoom Options",
+    value: {
+      mode,
+      minZoom,
+      maxZoom,
+      oscillations,
+    },
+  };
+}

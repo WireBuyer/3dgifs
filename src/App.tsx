@@ -6,11 +6,11 @@ import Scene from "./sceneCreator/core/scene";
 import { getScene, sceneList } from "./sceneCreator/scenes/sceneList";
 import SettingsDisplay from "./sceneCreator/ui/SettingsDisplay";
 import { SceneSettings } from "./sceneCreator/core/types";
-import { updateSceneSetting } from "./sceneCreator/ui/updateSceneSetting";
+import { updateSceneSetting } from "./sceneCreator/core/updateSceneSetting";
 
 function App() {
   const scenes = Object.keys(sceneList);
-  const [sceneSelection, setSceneSelection] = useState(scenes[1]);
+  const [sceneSelection, setSceneSelection] = useState(scenes[0]);
 
   // consider making a type for this
   const [currentScene, setCurrentScene] = useState<Scene<unknown>>(() =>
@@ -24,7 +24,7 @@ function App() {
 
   useEffect(() => {
     // move these to the scenes
-    const fps = 50;
+    const fps = 85;
     const totalFrames = 100;
 
     let texture: p5.Image;
@@ -44,21 +44,13 @@ function App() {
       };
 
       p.draw = () => {
-        p.orbitControl();
+        p.orbitControl(6);
         p.background(20);
+        // p.texture(texture);
 
         const progress = ((p.frameCount - 1) % totalFrames) / totalFrames;
-        // const zoomAmount = p.map(
-        //   Math.sin(progress * p.TWO_PI),
-        //   -1,
-        //   1,
-        //   0.5,
-        //   1.5
-        // );
-        // p.scale(zoomAmount);
 
         currentScene.draw(p, progress);
-        // tempdraw(p, progress, texture);
       };
     };
 

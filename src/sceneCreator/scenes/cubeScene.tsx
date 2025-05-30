@@ -29,12 +29,18 @@ export default class CubeScene extends Scene<CubeSceneSettings> {
       objects: {
         cube: cubeObject,
       },
-      general: { zoomInOut: false },
+      general: { zoomInOut: false, textures: {} },
     };
     return defaults;
   }
 
   draw(p: p5, progress: number): void {
+    AnimationSystem.applyCommonGeneralAnimations(
+      p,
+      progress,
+      this.settings.general
+    );
+
     AnimationSystem.applyCommonObjectAnimations(
       p,
       progress,
