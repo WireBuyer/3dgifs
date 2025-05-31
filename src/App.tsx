@@ -11,24 +11,21 @@ import { updateSceneSetting } from "./sceneCreator/core/updateSceneSetting";
 function App() {
   const scenes = Object.keys(sceneList);
   const [sceneSelection, setSceneSelection] = useState(scenes[0]);
-
-  // consider making a type for this
-  const [currentScene, setCurrentScene] = useState<Scene<unknown>>(() =>
-    getScene(sceneSelection)
-  );
-
+  // get the default settings for the first scene
   const [sceneSettings, setSceneSettings] = useState<SceneSettings>(
-    currentScene.settings as SceneSettings
+    getScene(scenes[0]).getDefaultSettings() as SceneSettings
   );
+
   const previewRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    const currentScene = getScene(sceneSelection);
+    let texture: p5.Image;
+    let camera: p5.Camera;
+
     // move these to the scenes
     const fps = 85;
     const totalFrames = 100;
-
-    let texture: p5.Image;
-    let camera: p5.Camera;
 
     const sketch = (p: p5) => {
       p.preload = () => {
@@ -50,7 +47,7 @@ function App() {
 
         const progress = ((p.frameCount - 1) % totalFrames) / totalFrames;
 
-        currentScene.draw(p, progress);
+        currentScene.draw(p, progress, sceneSettings);
       };
     };
 
@@ -59,25 +56,20 @@ function App() {
     return () => {
       p5Sketch.remove();
     };
-  }, [currentScene]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sceneSelection]);
 
   const handleSceneChange = (value: string | null) => {
     if (value == null) return;
-    const newScene = getScene(value);
     setSceneSelection(value);
-    setCurrentScene(newScene);
-    setSceneSettings(newScene.settings as SceneSettings);
+    setSceneSettings(getScene(value).getDefaultSettings() as SceneSettings);
   };
 
   const handleSceneSettingUpdate = (
     path: [keyof SceneSettings, ...string[]],
     value: unknown
   ) => {
-    const updatedSettings = updateSceneSetting(
-      currentScene.settings as SceneSettings,
-      path,
-      value
-    );
+    const updatedSettings = updateSceneSetting(sceneSettings, path, value);
     setSceneSettings(updatedSettings);
   };
 
@@ -130,12 +122,11 @@ function App() {
             searchable
             nothingFoundMessage="Nothing found..."
           />
-          {currentScene && (
-            <SettingsDisplay
-              sceneSettings={sceneSettings}
-              handleSceneSettingUpdate={handleSceneSettingUpdate}
-            />
-          )}
+
+          <SettingsDisplay
+            sceneSettings={sceneSettings}
+            handleSceneSettingUpdate={handleSceneSettingUpdate}
+          />
         </Box>
       </Flex>
     </Box>
