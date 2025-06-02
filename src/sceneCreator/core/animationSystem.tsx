@@ -1,5 +1,5 @@
 import p5 from "p5";
-import { ObjectSettings, Axes, GeneralSettings } from "./types";
+import { ObjectSettings, Axes, GeneralSettings, ZoomData } from "./types";
 
 export class AnimationSystem {
   static applyCommonGeneralAnimations(
@@ -7,7 +7,7 @@ export class AnimationSystem {
     progress: number,
     settings: GeneralSettings
   ): void {
-    console.log(settings);
+    this.handleCameraZoom(p, settings.zoom.value, progress);
   }
 
   static applyCommonObjectAnimations(
@@ -46,17 +46,35 @@ export class AnimationSystem {
     });
   }
 
-  static applyCameraZoom(p: p5, progress: number) {
-    // oscillates the zoom amount between 0.7x and 1.3x
-    const minZoom = 0.7;
-    const maxZoom = 1.3;
-    const zoomAmount = p.map(
-      Math.sin(progress * p.TWO_PI),
-      -1,
-      1,
-      minZoom,
-      maxZoom
-    );
+  static handleCameraZoom(p: p5, zoomData: ZoomData, progress: number): void {
+    if (zoomData.mode === "none") {
+      return;
+    }
+
+    let zoomAmount: number;
+    const zoomInMag = zoomData.zoomInMag;
+    const zoomOutScale = 1.0 / zoomData.zoomOutMag;
+    const oscillations = zoomData.oscillations;
+
+    if (zoomData.mode === "in") {
+      zoomAmount = p.map((progress * oscillations) % 1.0, 0, 1, 1, zoomInMag);
+    } else if (zoomData.mode === "out") {
+      zoomAmount = p.map(
+        (progress * oscillations) % 1.0,
+        0,
+        1,
+        1,
+        zoomOutScale
+      );
+    } else {
+      zoomAmount = p.map(
+        Math.sin(progress * 2 * Math.PI * oscillations),
+        -1,
+        1,
+        zoomOutScale,
+        zoomInMag
+      );
+    }
     p.scale(zoomAmount);
   }
 }

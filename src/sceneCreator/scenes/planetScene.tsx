@@ -1,14 +1,15 @@
 import p5 from "p5";
 import Scene from "../core/scene";
-import { SceneSettings, ObjectSettings } from "../core/types";
+import { SceneSettings, ObjectSettings, SliderField } from "../core/types";
 import { AnimationSystem } from "../core/animationSystem";
+import { createSliderField, createZoomField } from "../core/fieldHelper";
 
 interface PlanetObjectSettings extends ObjectSettings {
-  radius: number;
+  radius: SliderField;
 }
 
 interface MoonObjectSettings extends ObjectSettings {
-  distance: number;
+  distance: SliderField;
 }
 
 interface PlanetSceneSettings extends SceneSettings {
@@ -21,11 +22,11 @@ interface PlanetSceneSettings extends SceneSettings {
 export default class PlanetScene extends Scene<PlanetSceneSettings> {
   getDefaultSettings(): PlanetSceneSettings {
     const planetObject: PlanetObjectSettings = {
-      radius: 10,
+      radius: createSliderField("radius", 60, 30, 120, 5),
     };
 
     const moonObject: MoonObjectSettings = {
-      distance: 10,
+      distance: createSliderField("distance", 125, 50, 250, 5),
     };
 
     const defaults: PlanetSceneSettings = {
@@ -33,17 +34,13 @@ export default class PlanetScene extends Scene<PlanetSceneSettings> {
         planet: planetObject,
         moon: moonObject,
       },
-      general: { zoomInOut: false, textures: {} },
+      general: { zoom: createZoomField() },
     };
     return defaults;
   }
 
-  draw(p: p5, progress: number): void {
-    AnimationSystem.applyCommonGeneralAnimations(
-      p,
-      progress,
-      this.settings.general
-    );
+  draw(p: p5, progress: number, settings: PlanetSceneSettings): void {
+    AnimationSystem.applyCommonGeneralAnimations(p, progress, settings.general);
 
     // planet
     p.push();
@@ -53,6 +50,7 @@ export default class PlanetScene extends Scene<PlanetSceneSettings> {
     // moon
     p.push();
     const orbitRadius = 125;
+    // make it use the moon distance setting
     const moonX = orbitRadius * p.cos(2 * Math.PI * progress);
     const moonZ = orbitRadius * p.sin(2 * Math.PI * progress);
 

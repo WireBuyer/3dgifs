@@ -9,8 +9,9 @@ export type Axes = {
 
 export type ZoomData = {
   mode: "in" | "out" | "both" | "none";
-  minZoom: number;
-  maxZoom: number;
+  zoomInMag: number;
+  zoomOutMag: number;
+  // TODO: rename oscillations later
   oscillations: number;
 };
 
@@ -66,7 +67,7 @@ export interface ObjectSettings {
 }
 
 export type GeneralSettings = {
-  zoomInOut: ZoomField;
+  zoom: ZoomField;
 };
 
 export type SceneObjects = Record<string, ObjectSettings>;

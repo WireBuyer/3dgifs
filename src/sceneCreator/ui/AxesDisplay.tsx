@@ -35,9 +35,8 @@ export default function AxesDisplay({
               transitionDuration={0}
               onChange={(val) => {
                 const fullPath = [...path, "value", axis];
-                console.log(fullPath);
                 handleSceneSettingUpdate(
-                  fullPath as [keyof SceneSettings, ...string[]],
+                  fullPath as [keyof SceneSettings],
                   val
                 );
               }}

@@ -2,8 +2,9 @@ import {
   Group,
   Stack,
   SegmentedControl,
-  NumberInput,
   Text,
+  Box,
+  Slider,
 } from "@mantine/core";
 import { SceneSettings, ZoomField } from "../core/types";
 
@@ -22,8 +23,12 @@ export default function ZoomDisplay({
   handleSceneSettingUpdate,
 }: ZoomDisplayProps) {
   return (
-    <Group wrap="nowrap" mb="xs" align="start">
-      <Text size="sm" fw={500} style={{ textTransform: "capitalize" }}>
+    <Group wrap="nowrap" mb="xs" align="start" pb={"xs"}>
+      <Text
+        size="sm"
+        fw={500}
+        style={{ textTransform: "capitalize", minWidth: 80 }}
+      >
         {zoomData.label}
       </Text>
       <Stack gap="xs" style={{ flex: 1 }}>
@@ -40,65 +45,124 @@ export default function ZoomDisplay({
           transitionDuration={0}
           onChange={(value) => {
             const fullPath = [...path, "value", "mode"];
-            handleSceneSettingUpdate(
-              fullPath as [keyof SceneSettings, ...string[]],
-              value
-            );
+            handleSceneSettingUpdate(fullPath as [keyof SceneSettings], value);
           }}
         />
-        <Group gap="xs" grow>
-          <NumberInput
-            size="xs"
-            label="Zoom In Magnifyier"
-            value={zoomData.value.minZoom}
-            min={0.1}
-            max={1}
-            step={0.1}
-            disabled={
-              zoomData.value.mode !== "in" && zoomData.value.mode !== "both"
-            }
-            onChange={(value) => {
-              const fullPath = [...path, "value", "minZoom"];
-              handleSceneSettingUpdate(
-                fullPath as [keyof SceneSettings, ...string[]],
-                value
-              );
+
+        <Group gap="sm" grow>
+          {/* Zoom In Control */}
+          <Box
+            style={{
+              opacity:
+                zoomData.value.mode !== "in" && zoomData.value.mode !== "both"
+                  ? 0.5
+                  : 1,
             }}
-          />
-          <NumberInput
-            size="xs"
-            label="Zoom Out Magnifyier"
-            value={zoomData.value.maxZoom}
-            min={1}
-            max={2.5}
-            step={0.1}
-            disabled={
-              zoomData.value.mode !== "out" && zoomData.value.mode !== "both"
-            }
-            onChange={(value) => {
-              const fullPath = [...path, "value", "maxZoom"];
-              handleSceneSettingUpdate(
-                fullPath as [keyof SceneSettings, ...string[]],
-                value
-              );
+          >
+            <Group gap={4} mb={2}>
+              <Text size="xs" c="dimmed" style={{ flex: 1 }}>
+                Zoom In
+              </Text>
+              <Text size="xs" fw={500} w={30} ta="right">
+                {zoomData.value.zoomInMag.toFixed(1)}
+              </Text>
+            </Group>
+            <Slider
+              size="xs"
+              value={zoomData.value.zoomInMag}
+              min={1}
+              max={2.5}
+              step={0.1}
+              disabled={
+                zoomData.value.mode !== "in" && zoomData.value.mode !== "both"
+              }
+              onChange={(value) => {
+                const fullPath = [...path, "value", "zoomInMag"];
+                handleSceneSettingUpdate(
+                  fullPath as [keyof SceneSettings],
+                  value
+                );
+              }}
+              marks={[
+                { value: 1, label: "1x" },
+                { value: 2.5, label: "2.5x" },
+              ]}
+              color="blue"
+            />
+          </Box>
+
+          {/* Zoom Out Control */}
+          <Box
+            style={{
+              opacity:
+                zoomData.value.mode !== "out" && zoomData.value.mode !== "both"
+                  ? 0.5
+                  : 1,
             }}
-          />
-          <NumberInput
-            size="xs"
-            label="Oscillations"
-            value={zoomData.value.oscillations}
-            min={1}
-            max={10}
-            step={1}
-            disabled={zoomData.value.mode !== "both"}
-            onChange={(value) => {
-              const fullPath = [...path, "value", "oscillations"];
-              handleSceneSettingUpdate(
-                fullPath as [keyof SceneSettings, ...string[]],
-                value
-              );
-            }}
-          />
+          >
+            <Group gap={4} mb={2}>
+              <Text size="xs" c="dimmed" style={{ flex: 1 }}>
+                Zoom Out
+              </Text>
+              <Text size="xs" fw={500} w={30} ta="right">
+                {zoomData.value.zoomOutMag.toFixed(1)}
+              </Text>
+            </Group>
+            <Slider
+              size="xs"
+              value={zoomData.value.zoomOutMag}
+              min={1}
+              max={2.5}
+              step={0.1}
+              disabled={
+                zoomData.value.mode !== "out" && zoomData.value.mode !== "both"
+              }
+              onChange={(value) => {
+                const fullPath = [...path, "value", "zoomOutMag"];
+                handleSceneSettingUpdate(
+                  fullPath as [keyof SceneSettings],
+                  value
+                );
+              }}
+              marks={[
+                { value: 1, label: "1x" },
+                { value: 2.5, label: "2.5x" },
+              ]}
+              color="orange"
+            />
+          </Box>
+
+          {/* Oscillations Control */}
+          <Box style={{ opacity: zoomData.value.mode === "none" ? 0.5 : 1 }}>
+            <Group gap={4} mb={2}>
+              <Text size="xs" c="dimmed" style={{ flex: 1 }}>
+                Oscillations
+              </Text>
+              <Text size="xs" fw={500} w={20} ta="right">
+                {zoomData.value.oscillations}
+              </Text>
+            </Group>
+            <Slider
+              size="xs"
+              value={zoomData.value.oscillations}
+              min={1}
+              max={10}
+              step={1}
+              disabled={zoomData.value.mode === "none"}
+              onChange={(value) => {
+                const fullPath = [...path, "value", "oscillations"];
+                handleSceneSettingUpdate(
+                  fullPath as [keyof SceneSettings],
+                  value
+                );
+              }}
+              marks={[
+                { value: 1, label: "1" },
+                { value: 10, label: "10" },
+              ]}
+              color="green"
+            />
+          </Box>
         </Group>
       </Stack>
     </Group>

@@ -1,13 +1,4 @@
-import {
-  Box,
-  Checkbox,
-  Group,
-  NumberInput,
-  SegmentedControl,
-  Stack,
-  Text,
-  Title,
-} from "@mantine/core";
+import { Box, Title } from "@mantine/core";
 import { GeneralSettings, SceneSettings } from "../core/types";
 import { isZoomField } from "../core/fieldHelper";
 import ZoomDisplay from "./ZoomDisplay";

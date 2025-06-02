@@ -2,14 +2,13 @@ import {
   Box,
   Group,
   Paper,
-  SegmentedControl,
   Title,
   Text,
   Checkbox,
   Slider,
   Stack,
 } from "@mantine/core";
-import { Axes, SceneObjects, SceneSettings } from "../core/types";
+import { SceneObjects, SceneSettings } from "../core/types";
 import AxesDisplay from "./AxesDisplay";
 import {
   isAxesField,
@@ -50,9 +49,7 @@ export default function ObjectSettingsDisplay({
             <Box p={5}>
               {Object.entries(obbjectSettings).map(
                 ([settingName, settingData]) => {
-                  // console.log("basepath is", basePath);
                   const key = `${basePath.toString()}-${settingName}`;
-                  // console.log("key is", key);
 
                   if (isAxesField(settingData)) {
                     const axesPath = [...basePath, settingName];
@@ -74,8 +71,6 @@ export default function ObjectSettingsDisplay({
                         key={key}
                         onChange={(e) => {
                           const fullPath = [...basePath, settingName, "value"];
-                          console.log(fullPath);
-                          console.log(e.currentTarget.checked);
                           handleSceneSettingUpdate(
                             fullPath as [keyof SceneSettings, ...string[]],
                             e.currentTarget.checked

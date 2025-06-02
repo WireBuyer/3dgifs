@@ -86,14 +86,14 @@ export function createSliderField(
 /**
  * Creates a zoom field with default parameters.
  * @param mode - The zoom mode, can be "in", "out", "both", or "none" (default is "none")
- * @param minZoom - The minimum zoom level (default is 0.7)
- * @param maxZoom - The maximum zoom level (default is 1.3)
+ * @param zoomInMag - The minimum zoom level (default is 1.3)
+ * @param zoomOutMag - The maximum zoom level (default is 1.3)
  * @param oscillations - The number of oscillations for the zoom effect (default is 1)
  */
 export function createZoomField(
   mode: "in" | "out" | "both" | "none" = "none",
-  minZoom: number = 0.7,
-  maxZoom: number = 1.3,
+  zoomInMag: number = 1.3,
+  zoomOutMag: number = 1.3,
   oscillations: number = 1
 ): ZoomField {
   return {
@@ -101,8 +101,8 @@ export function createZoomField(
     label: "Zoom Options",
     value: {
       mode,
-      minZoom,
-      maxZoom,
+      zoomInMag: zoomInMag,
+      zoomOutMag: zoomOutMag,
       oscillations,
     },
   };

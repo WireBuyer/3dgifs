@@ -9,7 +9,6 @@ import {
 } from "../core/types";
 import {
   createAxesField,
-  createCheckboxField,
   createSliderField,
   createZoomField,
 } from "../core/fieldHelper";
@@ -28,7 +27,7 @@ export default class SphereScene extends Scene<SphereSceneSettings> {
   getDefaultSettings(): SphereSceneSettings {
     const axesDefault: Axes = {
       x: "off",
-      y: "off",
+      y: "rotate",
       z: "off",
     };
 
@@ -42,23 +41,19 @@ export default class SphereScene extends Scene<SphereSceneSettings> {
         sphere: sphereObject,
       },
       general: {
-        zoomInOut: createZoomField(),
+        zoom: createZoomField(),
       },
     };
     return defaults;
   }
 
-  draw(p: p5, progress: number): void {
-    AnimationSystem.applyCommonGeneralAnimations(
-      p,
-      progress,
-      this.settings.general
-    );
+  draw(p: p5, progress: number, settings: SphereSceneSettings): void {
+    AnimationSystem.applyCommonGeneralAnimations(p, progress, settings.general);
 
     AnimationSystem.applyCommonObjectAnimations(
       p,
       progress,
-      this.settings.objects.sphere
+      settings.objects.sphere
     );
 
     p.sphere(150);

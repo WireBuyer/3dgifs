@@ -16,6 +16,9 @@ function App() {
     getScene(scenes[0]).getDefaultSettings() as SceneSettings
   );
 
+  const canvasWidth = 350;
+  const canvasHeight = 350;
+
   const previewRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -33,7 +36,7 @@ function App() {
       };
 
       p.setup = () => {
-        p.createCanvas(350, 350, p.WEBGL);
+        p.createCanvas(canvasWidth, canvasHeight, p.WEBGL);
         p.frameRate(fps);
         p.noStroke();
         p.normalMaterial();
@@ -76,7 +79,7 @@ function App() {
   return (
     <Box
       style={{
-        minWidth: "900px",
+        minWidth: "1200px",
         minHeight: "600px",
         width: "100%",
         height: "100vh",
@@ -97,8 +100,8 @@ function App() {
             height: "100%",
           }}
         >
-          <Box ref={previewRef} w={350} h={350} mt={20} />
-          <Button mt="md" fullWidth w={350}>
+          <Box ref={previewRef} w={canvasWidth} h={canvasHeight} mt={20} />
+          <Button mt="md" fullWidth w={canvasWidth}>
             Download GIF
           </Button>
         </Box>
@@ -107,9 +110,10 @@ function App() {
           style={{
             flex: 1,
             minWidth: "500px",
-            maxWidth: "800px",
+            maxWidth: "1100px",
             padding: "16px",
             overflowY: "auto",
+            height: "100%",
           }}
         >
           <Select

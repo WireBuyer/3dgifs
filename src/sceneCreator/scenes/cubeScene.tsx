@@ -1,10 +1,20 @@
 import p5 from "p5";
 import Scene from "../core/scene";
 import { AnimationSystem } from "../core/animationSystem";
-import { SceneSettings, ObjectSettings } from "../core/types";
+import {
+  SceneSettings,
+  ObjectSettings,
+  SliderField,
+  Axes,
+} from "../core/types";
+import {
+  createAxesField,
+  createSliderField,
+  createZoomField,
+} from "../core/fieldHelper";
 
 interface CubeObjectSettings extends ObjectSettings {
-  size: number;
+  size: SliderField;
 }
 
 interface CubeSceneSettings extends SceneSettings {
@@ -14,37 +24,34 @@ interface CubeSceneSettings extends SceneSettings {
 }
 
 export default class CubeScene extends Scene<CubeSceneSettings> {
-  // update this so each param is an object with min/max or other values for the ui to use
   getDefaultSettings(): CubeSceneSettings {
+    const axesDefault: Axes = {
+      x: "off",
+      y: "rotate",
+      z: "off",
+    };
+
     const cubeObject: CubeObjectSettings = {
-      axes: {
-        x: "off",
-        y: "rotate",
-        z: "wobble",
-      },
-      size: 10,
+      axes: createAxesField(axesDefault),
+      size: createSliderField("size", 150, 50, 300, 10),
     };
 
     const defaults: CubeSceneSettings = {
       objects: {
         cube: cubeObject,
       },
-      general: { zoomInOut: false, textures: {} },
+      general: { zoom: createZoomField() },
     };
     return defaults;
   }
 
-  draw(p: p5, progress: number): void {
-    AnimationSystem.applyCommonGeneralAnimations(
-      p,
-      progress,
-      this.settings.general
-    );
+  draw(p: p5, progress: number, settings: CubeSceneSettings): void {
+    AnimationSystem.applyCommonGeneralAnimations(p, progress, settings.general);
 
     AnimationSystem.applyCommonObjectAnimations(
       p,
       progress,
-      this.settings.objects.cube
+      settings.objects.cube
     );
 
     p.box(150);
