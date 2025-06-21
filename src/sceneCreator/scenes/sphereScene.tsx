@@ -10,8 +10,10 @@ import {
 import {
   createAxesField,
   createSliderField,
+  createTextureField,
   createZoomField,
 } from "../core/fieldHelper";
+import defaultTexture from "../core/defaultTexture";
 
 interface SphereObjectSettings extends ObjectSettings {
   radius: SliderField;
@@ -27,13 +29,14 @@ export default class SphereScene extends Scene<SphereSceneSettings> {
   getDefaultSettings(): SphereSceneSettings {
     const axesDefault: Axes = {
       x: "off",
-      y: "rotate",
+      y: "off",
       z: "off",
     };
+    const textureData = ["Sphere"];
 
     const sphereObject: SphereObjectSettings = {
       axes: createAxesField(axesDefault),
-      radius: createSliderField("radius", 150, 50, 300, 10),
+      radius: createSliderField("radius", 120, 50, 200, 10),
     };
 
     const defaults: SphereSceneSettings = {
@@ -42,20 +45,31 @@ export default class SphereScene extends Scene<SphereSceneSettings> {
       },
       general: {
         zoom: createZoomField(),
+        textures: createTextureField(textureData),
       },
     };
     return defaults;
   }
 
   draw(p: p5, progress: number, settings: SphereSceneSettings): void {
+    const radius = settings.objects.sphere.radius.value;
+    const textures = settings.general.textures.value;
     AnimationSystem.applyCommonGeneralAnimations(p, progress, settings.general);
-
     AnimationSystem.applyCommonObjectAnimations(
       p,
       progress,
       settings.objects.sphere
     );
 
-    p.sphere(150);
+    this.drawSphere(p, radius, textures);
+  }
+
+  drawSphere(p: p5, size: number, textures: Record<string, p5.Image | null>) {
+    if (textures["Sphere"]) {
+      p.texture(textures["Sphere"]);
+    } else {
+      p.texture(defaultTexture.value!);
+    }
+    p.sphere(size);
   }
 }

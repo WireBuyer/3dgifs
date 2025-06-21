@@ -13,6 +13,7 @@ interface ZoomDisplayProps {
   path: string[];
   handleSceneSettingUpdate: (
     path: [keyof SceneSettings, ...string[]],
+    keys: string[],
     value: unknown
   ) => void;
 }
@@ -44,8 +45,12 @@ export default function ZoomDisplay({
           transitionTimingFunction={"ease"}
           transitionDuration={0}
           onChange={(value) => {
-            const fullPath = [...path, "value", "mode"];
-            handleSceneSettingUpdate(fullPath as [keyof SceneSettings], value);
+            const fullPath = [...path, "value"];
+            handleSceneSettingUpdate(
+              fullPath as [keyof SceneSettings],
+              ["mode"],
+              value
+            );
           }}
         />
 
@@ -77,9 +82,10 @@ export default function ZoomDisplay({
                 zoomData.value.mode !== "in" && zoomData.value.mode !== "both"
               }
               onChange={(value) => {
-                const fullPath = [...path, "value", "zoomInMag"];
+                const fullPath = [...path, "value"];
                 handleSceneSettingUpdate(
                   fullPath as [keyof SceneSettings],
+                  ["zoomInMag"],
                   value
                 );
               }}
@@ -118,9 +124,10 @@ export default function ZoomDisplay({
                 zoomData.value.mode !== "out" && zoomData.value.mode !== "both"
               }
               onChange={(value) => {
-                const fullPath = [...path, "value", "zoomOutMag"];
+                const fullPath = [...path, "value"];
                 handleSceneSettingUpdate(
                   fullPath as [keyof SceneSettings],
+                  ["zoomOutMag"],
                   value
                 );
               }}
@@ -150,9 +157,10 @@ export default function ZoomDisplay({
               step={1}
               disabled={zoomData.value.mode === "none"}
               onChange={(value) => {
-                const fullPath = [...path, "value", "oscillations"];
+                const fullPath = [...path, "value"];
                 handleSceneSettingUpdate(
                   fullPath as [keyof SceneSettings],
+                  ["oscillations"],
                   value
                 );
               }}

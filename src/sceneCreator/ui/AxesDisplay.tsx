@@ -6,6 +6,7 @@ interface AxesDisplayProps {
   path: string[];
   handleSceneSettingUpdate: (
     path: [keyof SceneSettings, ...string[]],
+    keys: string[],
     value: unknown
   ) => void;
 }
@@ -34,9 +35,10 @@ export default function AxesDisplay({
               value={movement}
               transitionDuration={0}
               onChange={(val) => {
-                const fullPath = [...path, "value", axis];
+                const fullPath = [...path, "value"];
                 handleSceneSettingUpdate(
                   fullPath as [keyof SceneSettings],
+                  [axis],
                   val
                 );
               }}

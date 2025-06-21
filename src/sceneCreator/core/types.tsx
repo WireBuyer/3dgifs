@@ -1,27 +1,19 @@
 // split this up if it gets too long
 
-export type AxisMovement = "rotate" | "wobble" | "off";
-export type Axes = {
-  x: AxisMovement;
-  y: AxisMovement;
-  z: AxisMovement;
-};
-
-export type ZoomData = {
-  mode: "in" | "out" | "both" | "none";
-  zoomInMag: number;
-  zoomOutMag: number;
-  // TODO: rename oscillations later
-  oscillations: number;
-};
+import p5 from "p5";
 
 type FieldTypes = "axes" | "checkbox" | "slider" | "texture" | "zoom";
-
 interface BaseField {
   type: FieldTypes;
   label: string;
 }
 
+export type AxisMovement = "rotate" | "wobble" | "off";
+export type Axes = {
+  x?: AxisMovement;
+  y?: AxisMovement;
+  z?: AxisMovement;
+};
 export interface AxesField extends BaseField {
   type: "axes";
   label: string;
@@ -45,10 +37,17 @@ export interface SliderField extends BaseField {
 
 export interface TextureField extends BaseField {
   type: "texture";
-  label: string;
-  value: string;
+  label: "Textures";
+  value: Record<string, p5.Image | null>;
 }
 
+export type ZoomData = {
+  mode: "in" | "out" | "both" | "none";
+  zoomInMag: number;
+  zoomOutMag: number;
+  // TODO: rename oscillations later
+  oscillations: number;
+};
 export interface ZoomField extends BaseField {
   type: "zoom";
   label: string;
@@ -68,6 +67,7 @@ export interface ObjectSettings {
 
 export type GeneralSettings = {
   zoom: ZoomField;
+  textures: TextureField;
 };
 
 export type SceneObjects = Record<string, ObjectSettings>;

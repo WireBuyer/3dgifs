@@ -1,3 +1,4 @@
+import p5 from "p5";
 import {
   Fields,
   AxesField,
@@ -84,8 +85,26 @@ export function createSliderField(
 }
 
 /**
+ * Creates a texture field with the specified texture names.
+ * @param surfaces - An array of surface names to be used as keys
+ * @returns
+ */
+export function createTextureField(surfaces: string[]): TextureField {
+  const value: Record<string, p5.Image | null> = {};
+  surfaces.forEach((surface) => {
+    value[surface] = null;
+  });
+
+  return {
+    type: "texture",
+    label: "Textures",
+    value: value,
+  };
+}
+
+/**
  * Creates a zoom field with default parameters.
- * @param mode - The zoom mode, can be "in", "out", "both", or "none" (default is "none")
+ * @param mode - The zoom mode - can be "in", "out", "both", or "none" (default is "none")
  * @param zoomInMag - The minimum zoom level (default is 1.3)
  * @param zoomOutMag - The maximum zoom level (default is 1.3)
  * @param oscillations - The number of oscillations for the zoom effect (default is 1)

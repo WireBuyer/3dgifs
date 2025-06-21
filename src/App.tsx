@@ -2,28 +2,28 @@ import p5 from "p5";
 import { useRef, useEffect, useState } from "react";
 import "@mantine/core/styles.css";
 import { Box, Button, Flex, Select } from "@mantine/core";
-import Scene from "./sceneCreator/core/scene";
 import { getScene, sceneList } from "./sceneCreator/scenes/sceneList";
 import SettingsDisplay from "./sceneCreator/ui/SettingsDisplay";
 import { SceneSettings } from "./sceneCreator/core/types";
 import { updateSceneSetting } from "./sceneCreator/core/updateSceneSetting";
+import defaultTexture from "./sceneCreator/core/defaultTexture";
+
+// TODO: instead of prop drilling use something like zustand
 
 function App() {
   const scenes = Object.keys(sceneList);
   const [sceneSelection, setSceneSelection] = useState(scenes[0]);
-  // get the default settings for the first scene
   const [sceneSettings, setSceneSettings] = useState<SceneSettings>(
-    getScene(scenes[0]).getDefaultSettings() as SceneSettings
+    getScene(sceneSelection).getDefaultSettings() as SceneSettings
   );
 
   const canvasWidth = 350;
   const canvasHeight = 350;
-
   const previewRef = useRef<HTMLDivElement>(null);
+  const [p5Instance, setP5Instance] = useState<p5 | null>(null);
 
   useEffect(() => {
     const currentScene = getScene(sceneSelection);
-    let texture: p5.Image;
     let camera: p5.Camera;
 
     // move these to the scenes
@@ -32,7 +32,9 @@ function App() {
 
     const sketch = (p: p5) => {
       p.preload = () => {
-        // texture = p.loadImage("/a.jpg");
+        // this loads a default texture each time this component mounts (each scene change)
+        // TODO: low prio but make this better
+        defaultTexture.value = p.loadImage("/a.jpg");
       };
 
       p.setup = () => {
@@ -46,7 +48,6 @@ function App() {
       p.draw = () => {
         p.orbitControl(6);
         p.background(20);
-        // p.texture(texture);
 
         const progress = ((p.frameCount - 1) % totalFrames) / totalFrames;
 
@@ -55,9 +56,11 @@ function App() {
     };
 
     const p5Sketch = new p5(sketch, previewRef.current!);
+    setP5Instance(p5Sketch);
 
     return () => {
       p5Sketch.remove();
+      setP5Instance(null);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sceneSelection]);
@@ -70,9 +73,15 @@ function App() {
 
   const handleSceneSettingUpdate = (
     path: [keyof SceneSettings, ...string[]],
+    keys: string[],
     value: unknown
   ) => {
-    const updatedSettings = updateSceneSetting(sceneSettings, path, value);
+    const updatedSettings = updateSceneSetting(
+      sceneSettings,
+      path,
+      keys,
+      value
+    );
     setSceneSettings(updatedSettings);
   };
 
@@ -127,10 +136,14 @@ function App() {
             nothingFoundMessage="Nothing found..."
           />
 
-          <SettingsDisplay
-            sceneSettings={sceneSettings}
-            handleSceneSettingUpdate={handleSceneSettingUpdate}
-          />
+          {p5Instance && (
+            <SettingsDisplay
+              p5Instance={p5Instance}
+              sceneSettings={sceneSettings}
+              handleSceneSettingUpdate={handleSceneSettingUpdate}
+              sceneSelection={sceneSelection}
+            />
+          )}
         </Box>
       </Flex>
     </Box>
