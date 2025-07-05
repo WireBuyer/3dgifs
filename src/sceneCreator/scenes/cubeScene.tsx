@@ -9,11 +9,13 @@ import {
 } from "../core/types";
 import {
   createAxesField,
+  createCameraField,
   createSliderField,
   createTextureField,
   createZoomField,
 } from "../core/fieldHelper";
 import defaultTexture from "../core/defaultTexture";
+import getCameraPosition from "../core/cameraHelper";
 
 interface CubeObjectSettings extends ObjectSettings {
   size: SliderField;
@@ -32,7 +34,7 @@ export default class CubeScene extends Scene<CubeSceneSettings> {
       y: "off",
       z: "off",
     };
-    const textureData = ["Front", "Right", "Left", "Back", "Top", "Bottom"];
+    const surfaceNames = ["Front", "Right", "Left", "Back", "Top", "Bottom"];
 
     const cubeObject: CubeObjectSettings = {
       axes: createAxesField(axesDefault),
@@ -45,8 +47,12 @@ export default class CubeScene extends Scene<CubeSceneSettings> {
       },
       general: {
         zoom: createZoomField(),
-        textures: createTextureField(textureData),
+        textures: createTextureField(surfaceNames),
       },
+      cameraInfo: createCameraField({
+        default: [0, 0, 800],
+        "upper right": getCameraPosition(-30, 55),
+      }),
     };
     return defaults;
   }

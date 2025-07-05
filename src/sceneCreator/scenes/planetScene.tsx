@@ -9,11 +9,13 @@ import {
 import { AnimationSystem } from "../core/animationSystem";
 import {
   createAxesField,
+  createCameraField,
   createSliderField,
   createTextureField,
   createZoomField,
 } from "../core/fieldHelper";
 import defaultTexture from "../core/defaultTexture";
+import getCameraPosition from "../core/cameraHelper";
 
 interface PlanetObjectSettings extends ObjectSettings {
   radius: SliderField;
@@ -34,7 +36,7 @@ export default class PlanetScene extends Scene<PlanetSceneSettings> {
   getDefaultSettings(): PlanetSceneSettings {
     const planetAxesDefault: Axes = {
       x: "off",
-      y: "off",
+      y: "rotate",
       z: "off",
     };
 
@@ -44,7 +46,7 @@ export default class PlanetScene extends Scene<PlanetSceneSettings> {
       z: "off",
     };
 
-    const textureData = ["Planet", "Moon"];
+    const surfaceNames = ["Planet", "Moon"];
 
     const planetObject: PlanetObjectSettings = {
       axes: createAxesField(planetAxesDefault),
@@ -63,17 +65,18 @@ export default class PlanetScene extends Scene<PlanetSceneSettings> {
       },
       general: {
         zoom: createZoomField(),
-        textures: createTextureField(textureData),
+        textures: createTextureField(surfaceNames),
       },
+      cameraInfo: createCameraField({
+        default: [0, 0, 800],
+        "upper right": getCameraPosition(-30, 55),
+      }),
     };
     return defaults;
   }
 
-  // TODO: the moon starting position needs to be changed when the new default camera angle is added
   draw(p: p5, progress: number, settings: PlanetSceneSettings): void {
     AnimationSystem.applyCommonGeneralAnimations(p, progress, settings.general);
-
-    // TODO: implement the use of the standard rotation options
 
     const planetSize = settings.objects.planet.radius.value;
     const orbitRadius = settings.objects.moon.distance.value;
@@ -90,15 +93,15 @@ export default class PlanetScene extends Scene<PlanetSceneSettings> {
       progress,
       settings.objects.planet
     );
+    p.rotateY((75 * Math.PI) / 180);
     p.sphere(planetSize);
     p.pop();
 
     // moon
     p.push();
-    const moonX = (orbitRadius + planetSize) * p.cos(2 * Math.PI * progress);
+    const moonX = -(orbitRadius + planetSize) * p.cos(2 * Math.PI * progress);
     const moonZ = (orbitRadius + planetSize) * p.sin(2 * Math.PI * progress);
-    p.translate(-moonX, 0, moonZ);
-    // p.rotateY(2 * Math.PI * progress);
+    p.translate(moonX, 0, moonZ);
     if (settings.general.textures.value["Moon"]) {
       p.texture(settings.general.textures.value["Moon"]);
     } else {
@@ -109,6 +112,7 @@ export default class PlanetScene extends Scene<PlanetSceneSettings> {
       progress,
       settings.objects.moon
     );
+    p.rotateY((-75 * Math.PI) / 180);
     p.sphere(25);
     p.pop();
   }

@@ -9,6 +9,7 @@ import {
 } from "../core/types";
 import {
   createAxesField,
+  createCameraField,
   createSliderField,
   createTextureField,
   createZoomField,
@@ -29,10 +30,10 @@ export default class SphereScene extends Scene<SphereSceneSettings> {
   getDefaultSettings(): SphereSceneSettings {
     const axesDefault: Axes = {
       x: "off",
-      y: "off",
+      y: "rotate",
       z: "off",
     };
-    const textureData = ["Sphere"];
+    const surfaceNames = ["Sphere"];
 
     const sphereObject: SphereObjectSettings = {
       axes: createAxesField(axesDefault),
@@ -45,15 +46,15 @@ export default class SphereScene extends Scene<SphereSceneSettings> {
       },
       general: {
         zoom: createZoomField(),
-        textures: createTextureField(textureData),
+        textures: createTextureField(surfaceNames),
       },
+      cameraInfo: createCameraField({ default: [0, 0, 800] }),
     };
     return defaults;
   }
 
   draw(p: p5, progress: number, settings: SphereSceneSettings): void {
-    const radius = settings.objects.sphere.radius.value;
-    const textures = settings.general.textures.value;
+    p.push();
     AnimationSystem.applyCommonGeneralAnimations(p, progress, settings.general);
     AnimationSystem.applyCommonObjectAnimations(
       p,
@@ -61,7 +62,11 @@ export default class SphereScene extends Scene<SphereSceneSettings> {
       settings.objects.sphere
     );
 
+    p.rotateY((75 * Math.PI) / 180);
+    const radius = settings.objects.sphere.radius.value;
+    const textures = settings.general.textures.value;
     this.drawSphere(p, radius, textures);
+    p.pop();
   }
 
   drawSphere(p: p5, size: number, textures: Record<string, p5.Image | null>) {

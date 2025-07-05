@@ -7,12 +7,15 @@ import SettingsDisplay from "./sceneCreator/ui/SettingsDisplay";
 import { SceneSettings } from "./sceneCreator/core/types";
 import { updateSceneSetting } from "./sceneCreator/core/updateSceneSetting";
 import defaultTexture from "./sceneCreator/core/defaultTexture";
+import CameraAngleSelector from "./sceneCreator/ui/CameraAngleSelector";
 
-// TODO: instead of prop drilling use something like zustand
+// TODO:
+// instead of prop drilling use something like zustand
+// refactor this to use a scene manager class
 
 function App() {
   const scenes = Object.keys(sceneList);
-  const [sceneSelection, setSceneSelection] = useState(scenes[0]);
+  const [sceneSelection, setSceneSelection] = useState(scenes[2]);
   const [sceneSettings, setSceneSettings] = useState<SceneSettings>(
     getScene(sceneSelection).getDefaultSettings() as SceneSettings
   );
@@ -27,7 +30,7 @@ function App() {
     let camera: p5.Camera;
 
     // move these to the scenes
-    const fps = 85;
+    const fps = 50;
     const totalFrames = 100;
 
     const sketch = (p: p5) => {
@@ -85,6 +88,25 @@ function App() {
     setSceneSettings(updatedSettings);
   };
 
+  const setCameraPosition = (position: [number, number, number]) => {
+    if (p5Instance) {
+      // this is needed to ensure the camera is facing the right way
+      p5Instance.camera(
+        position[0],
+        position[1],
+        position[2],
+        0,
+        0,
+        0,
+        0,
+        1,
+        0
+      );
+    } else {
+      console.warn("error setting camera position");
+    }
+  };
+
   return (
     <Box
       style={{
@@ -103,13 +125,19 @@ function App() {
         style={{ minHeight: "100%" }}
       >
         <Box
+          w={canvasWidth}
           style={{
-            minWidth: "350px",
             padding: "32px 16px",
             height: "100%",
           }}
         >
           <Box ref={previewRef} w={canvasWidth} h={canvasHeight} mt={20} />
+          {p5Instance && (
+            <CameraAngleSelector
+              cameraInfo={sceneSettings.cameraInfo}
+              setCameraPosition={setCameraPosition}
+            />
+          )}
           <Button mt="md" fullWidth w={canvasWidth}>
             Download GIF
           </Button>

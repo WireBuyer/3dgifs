@@ -89,6 +89,8 @@ export default function TextureDisplay({
       },
       () => console.warn("error loading image")
     );
+
+    clearSelectedSurfaces();
   };
 
   return (
@@ -103,6 +105,7 @@ export default function TextureDisplay({
       </Text>
 
       {/* selection buttons */}
+      {/* TODO: add a remove texture button to return to null */}
       <Group gap={"xs"} mb={"sm"}>
         <Button size={"xs"} variant={"subtle"} onClick={selectAllSurfaces}>
           Select All

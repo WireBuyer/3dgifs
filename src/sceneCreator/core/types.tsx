@@ -2,7 +2,13 @@
 
 import p5 from "p5";
 
-type FieldTypes = "axes" | "checkbox" | "slider" | "texture" | "zoom";
+type FieldTypes =
+  | "axes"
+  | "camera"
+  | "checkbox"
+  | "slider"
+  | "texture"
+  | "zoom";
 interface BaseField {
   type: FieldTypes;
   label: string;
@@ -70,9 +76,17 @@ export type GeneralSettings = {
   textures: TextureField;
 };
 
+export interface CameraInfo extends BaseField {
+  type: "camera";
+  label: string;
+  presetAngles: Record<string, [number, number, number]>;
+  value: [number, number, number];
+}
+
 export type SceneObjects = Record<string, ObjectSettings>;
 
 export interface SceneSettings {
   objects: SceneObjects;
   general: GeneralSettings;
+  cameraInfo: CameraInfo;
 }

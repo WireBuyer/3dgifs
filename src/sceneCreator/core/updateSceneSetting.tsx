@@ -18,7 +18,6 @@ export function updateSceneSetting(
     current[key] = { ...current[key] };
     current = current[key];
   }
-  console.log("current", current, " keys:", keys);
 
   // update all keys with the value
   keys.forEach((key) => {

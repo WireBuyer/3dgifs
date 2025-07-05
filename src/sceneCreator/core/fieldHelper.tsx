@@ -7,6 +7,7 @@ import {
   TextureField,
   Axes,
   ZoomField,
+  CameraInfo,
 } from "./types";
 
 // type guards for the fields
@@ -56,6 +57,23 @@ export function createCheckboxField(
     type: "checkbox",
     label,
     value,
+  };
+}
+
+/**
+ *
+ * @param presetAngles - Label and values of the preset angles
+ * @param value - Initial value of the camera (default: [0, 0, 800])
+ */
+export function createCameraField(
+  presetAngles: Record<string, [number, number, number]>,
+  value: [number, number, number] = [0, 0, 800]
+): CameraInfo {
+  return {
+    type: "camera",
+    label: "Angle Presets",
+    presetAngles: presetAngles,
+    value: value,
   };
 }
 
