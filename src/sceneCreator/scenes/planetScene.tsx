@@ -33,6 +33,7 @@ interface PlanetSceneSettings extends SceneSettings {
 }
 
 export default class PlanetScene extends Scene<PlanetSceneSettings> {
+  sceneLabel = "Planet and Moon";
   getDefaultSettings(): PlanetSceneSettings {
     const planetAxesDefault: Axes = {
       x: "off",
@@ -69,7 +70,7 @@ export default class PlanetScene extends Scene<PlanetSceneSettings> {
       },
       cameraInfo: createCameraField({
         default: [0, 0, 800],
-        "upper right": getCameraPosition(-30, 55),
+        "upper left": getCameraPosition(30, 55),
       }),
     };
     return defaults;
@@ -83,8 +84,8 @@ export default class PlanetScene extends Scene<PlanetSceneSettings> {
 
     // planet
     p.push();
-    if (settings.general.textures.value["Planet"]) {
-      p.texture(settings.general.textures.value["Planet"]);
+    if (this.textures["Planet"]) {
+      p.texture(this.textures["Planet"]);
     } else {
       p.texture(defaultTexture.value!);
     }
@@ -102,8 +103,8 @@ export default class PlanetScene extends Scene<PlanetSceneSettings> {
     const moonX = -(orbitRadius + planetSize) * p.cos(2 * Math.PI * progress);
     const moonZ = (orbitRadius + planetSize) * p.sin(2 * Math.PI * progress);
     p.translate(moonX, 0, moonZ);
-    if (settings.general.textures.value["Moon"]) {
-      p.texture(settings.general.textures.value["Moon"]);
+    if (this.textures["Moon"]) {
+      p.texture(this.textures["Moon"]);
     } else {
       p.texture(defaultTexture.value!);
     }

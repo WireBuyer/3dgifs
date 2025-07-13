@@ -6,6 +6,7 @@ interface CameraAngleSelectorProps {
   setCameraPosition: (position: [number, number, number]) => void;
 }
 
+// TODO: add a movement option to easily move left right up down
 export default function CameraAngleSelector({
   cameraInfo,
   setCameraPosition,

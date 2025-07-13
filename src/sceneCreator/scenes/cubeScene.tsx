@@ -28,6 +28,8 @@ interface CubeSceneSettings extends SceneSettings {
 }
 
 export default class CubeScene extends Scene<CubeSceneSettings> {
+  sceneLabel = "Cube";
+
   getDefaultSettings(): CubeSceneSettings {
     const axesDefault: Axes = {
       x: "off",
@@ -66,20 +68,19 @@ export default class CubeScene extends Scene<CubeSceneSettings> {
       settings.objects.cube
     );
 
-    const textures = settings.general.textures.value;
-    this.drawCube(p, settings.objects.cube.size.value, textures);
+    this.drawCube(p, settings.objects.cube.size.value);
   }
 
   drawCube(
     p: p5,
-    size: number,
-    textures: Record<string, p5.Image | null>
+    size: number
+    // textures: Record<string, p5.Image | null>
   ): void {
     // front
     p.push();
     p.translate(0, 0, size / 2);
-    if (textures["Front"]) {
-      p.texture(textures["Front"]);
+    if (this.textures["Front"]) {
+      p.texture(this.textures["Front"]);
     } else {
       p.texture(defaultTexture.value!);
     }
@@ -90,8 +91,8 @@ export default class CubeScene extends Scene<CubeSceneSettings> {
     p.push();
     p.translate(size / 2, 0, 0);
     p.rotateY(Math.PI / 2);
-    if (textures["Right"]) {
-      p.texture(textures["Right"]);
+    if (this.textures["Right"]) {
+      p.texture(this.textures["Right"]);
     } else {
       p.texture(defaultTexture.value!);
     }
@@ -102,8 +103,8 @@ export default class CubeScene extends Scene<CubeSceneSettings> {
     p.push();
     p.translate(-size / 2, 0, 0);
     p.rotateY(-Math.PI / 2);
-    if (textures["Left"]) {
-      p.texture(textures["Left"]);
+    if (this.textures["Left"]) {
+      p.texture(this.textures["Left"]);
     } else {
       p.texture(defaultTexture.value!);
     }
@@ -114,8 +115,8 @@ export default class CubeScene extends Scene<CubeSceneSettings> {
     p.push();
     p.translate(0, 0, -size / 2);
     p.rotateY(Math.PI);
-    if (textures["Back"]) {
-      p.texture(textures["Back"]);
+    if (this.textures["Back"]) {
+      p.texture(this.textures["Back"]);
     } else {
       p.texture(defaultTexture.value!);
     }
@@ -126,8 +127,8 @@ export default class CubeScene extends Scene<CubeSceneSettings> {
     p.push();
     p.translate(0, -size / 2, 0);
     p.rotateX(Math.PI / 2);
-    if (textures["Top"]) {
-      p.texture(textures["Top"]);
+    if (this.textures["Top"]) {
+      p.texture(this.textures["Top"]);
     } else {
       p.texture(defaultTexture.value!);
     }
@@ -138,8 +139,8 @@ export default class CubeScene extends Scene<CubeSceneSettings> {
     p.push();
     p.translate(0, size / 2, 0);
     p.rotateX(-Math.PI / 2);
-    if (textures["Bottom"]) {
-      p.texture(textures["Bottom"]);
+    if (this.textures["Bottom"]) {
+      p.texture(this.textures["Bottom"]);
     } else {
       p.texture(defaultTexture.value!);
     }

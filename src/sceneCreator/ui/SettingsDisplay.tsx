@@ -3,6 +3,7 @@ import { SceneSettings } from "../core/types";
 import ObjectSettingsDisplay from "./ObjectSettingsDisplay";
 import GeneralSettingsDisplay from "./GeneralSettingsDisplay";
 import p5 from "p5";
+import Scene from "../core/scene";
 
 interface SceneSettingsProps {
   p5Instance: p5;
@@ -12,7 +13,7 @@ interface SceneSettingsProps {
     keys: string[],
     value: unknown
   ) => void;
-  sceneSelection: string;
+  currentScene: Scene<unknown>;
 }
 // TODO:
 // add a "show simple settings" option. need to modify all params with an "advanced" or "simple" option
@@ -22,7 +23,7 @@ export default function SettingsDisplay({
   p5Instance,
   sceneSettings,
   handleSceneSettingUpdate,
-  sceneSelection,
+  currentScene,
 }: SceneSettingsProps) {
   return (
     <Card p={25}>
@@ -37,7 +38,7 @@ export default function SettingsDisplay({
           p5Instance={p5Instance}
           sceneSettings={sceneSettings.general}
           handleSceneSettingUpdate={handleSceneSettingUpdate}
-          sceneSelection={sceneSelection}
+          currentScene={currentScene}
         />
       </Card.Section>
     </Card>

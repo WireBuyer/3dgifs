@@ -1,13 +1,15 @@
-import p5 from "p5";
-import { useRef, useEffect, useState } from "react";
-import "@mantine/core/styles.css";
 import { Box, Button, Flex, Select } from "@mantine/core";
-import { getScene, sceneList } from "./sceneCreator/scenes/sceneList";
-import SettingsDisplay from "./sceneCreator/ui/SettingsDisplay";
+import "@mantine/core/styles.css";
+import p5 from "p5";
+import { useEffect, useRef, useState } from "react";
+import defaultTexture from "./sceneCreator/core/defaultTexture";
 import { SceneSettings } from "./sceneCreator/core/types";
 import { updateSceneSetting } from "./sceneCreator/core/updateSceneSetting";
-import defaultTexture from "./sceneCreator/core/defaultTexture";
+import { getScene, sceneList } from "./sceneCreator/scenes/sceneList";
 import CameraAngleSelector from "./sceneCreator/ui/CameraAngleSelector";
+import SettingsDisplay from "./sceneCreator/ui/SettingsDisplay";
+import downloadGif from "./sceneCreator/core/downloadGif";
+import Scene from "./sceneCreator/core/scene";
 
 // TODO:
 // instead of prop drilling use something like zustand
@@ -15,23 +17,26 @@ import CameraAngleSelector from "./sceneCreator/ui/CameraAngleSelector";
 
 function App() {
   const scenes = Object.keys(sceneList);
-  const [sceneSelection, setSceneSelection] = useState(scenes[2]);
+  const [sceneSelection, setSceneSelection] = useState(scenes[1]);
+  const [currentScene, setCurrentScene] = useState<Scene<unknown>>(
+    getScene(sceneSelection)
+  );
   const [sceneSettings, setSceneSettings] = useState<SceneSettings>(
-    getScene(sceneSelection).getDefaultSettings() as SceneSettings
+    currentScene.getDefaultSettings() as SceneSettings
   );
 
-  const canvasWidth = 350;
-  const canvasHeight = 350;
+  const CANVAS_WIDTH = 350;
+  const CANVAS_HEIGHT = 350;
   const previewRef = useRef<HTMLDivElement>(null);
   const [p5Instance, setP5Instance] = useState<p5 | null>(null);
+  // consider making this usestate. see if settings will depend on this when this updates or not
 
   useEffect(() => {
-    const currentScene = getScene(sceneSelection);
     let camera: p5.Camera;
 
     // move these to the scenes
     const fps = 50;
-    const totalFrames = 100;
+    const totalFrames = 150;
 
     const sketch = (p: p5) => {
       p.preload = () => {
@@ -41,7 +46,7 @@ function App() {
       };
 
       p.setup = () => {
-        p.createCanvas(canvasWidth, canvasHeight, p.WEBGL);
+        p.createCanvas(CANVAS_WIDTH, CANVAS_HEIGHT, p.WEBGL);
         p.frameRate(fps);
         p.noStroke();
         p.normalMaterial();
@@ -51,9 +56,7 @@ function App() {
       p.draw = () => {
         p.orbitControl(6);
         p.background(20);
-
         const progress = ((p.frameCount - 1) % totalFrames) / totalFrames;
-
         currentScene.draw(p, progress, sceneSettings);
       };
     };
@@ -70,8 +73,11 @@ function App() {
 
   const handleSceneChange = (value: string | null) => {
     if (value == null) return;
+
+    const scene = getScene(value);
     setSceneSelection(value);
-    setSceneSettings(getScene(value).getDefaultSettings() as SceneSettings);
+    setCurrentScene(scene);
+    setSceneSettings(scene.getDefaultSettings() as SceneSettings);
   };
 
   const handleSceneSettingUpdate = (
@@ -88,6 +94,7 @@ function App() {
     setSceneSettings(updatedSettings);
   };
 
+  // this should probably be moved
   const setCameraPosition = (position: [number, number, number]) => {
     if (p5Instance) {
       // this is needed to ensure the camera is facing the right way
@@ -102,6 +109,7 @@ function App() {
         1,
         0
       );
+      sceneSettings.cameraInfo.value = position;
     } else {
       console.warn("error setting camera position");
     }
@@ -125,22 +133,36 @@ function App() {
         style={{ minHeight: "100%" }}
       >
         <Box
-          w={canvasWidth}
+          w={CANVAS_WIDTH}
           style={{
             padding: "32px 16px",
             height: "100%",
           }}
         >
-          <Box ref={previewRef} w={canvasWidth} h={canvasHeight} mt={20} />
+          <Box ref={previewRef} w={CANVAS_WIDTH} h={CANVAS_HEIGHT} mt={20} />
           {p5Instance && (
-            <CameraAngleSelector
-              cameraInfo={sceneSettings.cameraInfo}
-              setCameraPosition={setCameraPosition}
-            />
+            <>
+              <CameraAngleSelector
+                cameraInfo={sceneSettings.cameraInfo}
+                setCameraPosition={setCameraPosition}
+              />
+              <Button
+                mt="md"
+                fullWidth
+                w={CANVAS_WIDTH}
+                onClick={() =>
+                  downloadGif(
+                    sceneSelection,
+                    sceneSettings,
+                    CANVAS_HEIGHT,
+                    CANVAS_WIDTH
+                  )
+                }
+              >
+                Download GIF
+              </Button>
+            </>
           )}
-          <Button mt="md" fullWidth w={canvasWidth}>
-            Download GIF
-          </Button>
         </Box>
 
         <Box
@@ -169,7 +191,7 @@ function App() {
               p5Instance={p5Instance}
               sceneSettings={sceneSettings}
               handleSceneSettingUpdate={handleSceneSettingUpdate}
-              sceneSelection={sceneSelection}
+              currentScene={currentScene}
             />
           )}
         </Box>

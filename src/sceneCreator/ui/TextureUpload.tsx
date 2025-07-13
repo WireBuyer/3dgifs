@@ -3,9 +3,11 @@ import { SceneSettings, TextureField } from "../core/types";
 import { useState } from "react";
 import { Dropzone } from "@mantine/dropzone";
 import p5 from "p5";
+import Scene from "../core/scene";
 
 // props for the component
-interface MyTextureDisplayRenameProps {
+interface TextureDisplayProps {
+  p: p5;
   textureData: TextureField;
   path: string[];
   handleSceneSettingUpdate: (
@@ -13,15 +15,16 @@ interface MyTextureDisplayRenameProps {
     keys: string[],
     value: unknown
   ) => void;
-  p: p5;
+  currentScene: Scene<unknown>;
 }
 
-export default function TextureDisplay({
+export default function TextureUpload({
+  p,
   textureData,
   path,
   handleSceneSettingUpdate,
-  p,
-}: MyTextureDisplayRenameProps) {
+  currentScene,
+}: TextureDisplayProps) {
   const [selectedSurfaces, setSelectedSurfaces] = useState<Set<string>>(
     new Set()
   );
@@ -48,7 +51,7 @@ export default function TextureDisplay({
 
   const getSurfaceButtonStyle = (
     surfaceLabel: string,
-    surfaceValue: p5.Image | null
+    surfaceValue: string | null
   ) => {
     const isSelected = selectedSurfaces.has(surfaceLabel);
     const isAssigned = surfaceValue !== null;
@@ -74,22 +77,25 @@ export default function TextureDisplay({
   const handleImageUpload = (files: File[]) => {
     if (files.length === 0 || selectedSurfaces.size === 0 || !p) return;
 
+    // revoke old urls to make space for the new one
+    selectedSurfaces.forEach((surfaceName) => {
+      if (textureData.value[surfaceName]) {
+        URL.revokeObjectURL(textureData.value[surfaceName]);
+      }
+    });
+
     const file = files[0];
     const imageUrl = URL.createObjectURL(file);
-    p.loadImage(
-      imageUrl,
-      (p5Image) => {
-        URL.revokeObjectURL(imageUrl);
-        const fullPath = [...path, "value"];
-        handleSceneSettingUpdate(
-          fullPath as [keyof SceneSettings],
-          Array.from(selectedSurfaces),
-          p5Image
-        );
-      },
-      () => console.warn("error loading image")
-    );
 
+    const fullPath = [...path, "value"];
+    handleSceneSettingUpdate(
+      fullPath as [keyof SceneSettings],
+      Array.from(selectedSurfaces),
+      imageUrl
+    );
+    currentScene.applyTexture(p, Array.from(selectedSurfaces), imageUrl);
+
+    // have to load the image now for the live preview
     clearSelectedSurfaces();
   };
 

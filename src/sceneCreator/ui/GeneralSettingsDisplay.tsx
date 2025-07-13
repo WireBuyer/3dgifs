@@ -3,7 +3,8 @@ import { GeneralSettings, SceneSettings } from "../core/types";
 import { isTextureField, isZoomField } from "../core/fieldHelper";
 import ZoomDisplay from "./ZoomDisplay";
 import p5 from "p5";
-import TextureDisplay from "./TextureDisplay";
+import TextureUpload from "./TextureUpload";
+import Scene from "../core/scene";
 
 interface GeneralSettingsProps {
   p5Instance: p5;
@@ -13,7 +14,7 @@ interface GeneralSettingsProps {
     keys: string[],
     value: unknown
   ) => void;
-  sceneSelection: string;
+  currentScene: Scene<unknown>;
 }
 
 // this is similar to the ObjectSettingsDisplay but for the general settings
@@ -21,9 +22,7 @@ export default function GeneralSettingsDisplay({
   p5Instance,
   sceneSettings,
   handleSceneSettingUpdate,
-  // need this solely to make a unique key that changes when the scene changes
-  // the object settings component can get away with having different object names between scenes
-  sceneSelection,
+  currentScene,
 }: GeneralSettingsProps) {
   return (
     <Box>
@@ -33,7 +32,9 @@ export default function GeneralSettingsDisplay({
 
       {Object.entries(sceneSettings).map(([settingName, settingData]) => {
         const basePath: string[] = ["general"];
-        const key = `${sceneSelection}-${basePath.toString()}-${settingName}`;
+        const key = `${
+          currentScene.sceneLabel
+        }-${basePath.toString()}-${settingName}`;
 
         if (isZoomField(settingData)) {
           const zoomPath = [...basePath, settingName];
@@ -48,11 +49,12 @@ export default function GeneralSettingsDisplay({
         } else if (isTextureField(settingData)) {
           const texturePath = [...basePath, settingName];
           return (
-            <TextureDisplay
+            <TextureUpload
+              p={p5Instance}
               textureData={settingData}
               path={texturePath}
               handleSceneSettingUpdate={handleSceneSettingUpdate}
-              p={p5Instance}
+              currentScene={currentScene}
               key={key}
             />
           );

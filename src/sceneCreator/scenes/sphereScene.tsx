@@ -27,6 +27,7 @@ interface SphereSceneSettings extends SceneSettings {
 }
 
 export default class SphereScene extends Scene<SphereSceneSettings> {
+  sceneLabel = "Sphere";
   getDefaultSettings(): SphereSceneSettings {
     const axesDefault: Axes = {
       x: "off",
@@ -64,14 +65,13 @@ export default class SphereScene extends Scene<SphereSceneSettings> {
 
     p.rotateY((75 * Math.PI) / 180);
     const radius = settings.objects.sphere.radius.value;
-    const textures = settings.general.textures.value;
-    this.drawSphere(p, radius, textures);
+    this.drawSphere(p, radius);
     p.pop();
   }
 
-  drawSphere(p: p5, size: number, textures: Record<string, p5.Image | null>) {
-    if (textures["Sphere"]) {
-      p.texture(textures["Sphere"]);
+  drawSphere(p: p5, size: number) {
+    if (this.textures["Sphere"]) {
+      p.texture(this.textures["Sphere"]);
     } else {
       p.texture(defaultTexture.value!);
     }

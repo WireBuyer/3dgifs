@@ -1,7 +1,5 @@
 // split this up if it gets too long
 
-import p5 from "p5";
-
 type FieldTypes =
   | "axes"
   | "camera"
@@ -9,6 +7,7 @@ type FieldTypes =
   | "slider"
   | "texture"
   | "zoom";
+
 interface BaseField {
   type: FieldTypes;
   label: string;
@@ -44,7 +43,7 @@ export interface SliderField extends BaseField {
 export interface TextureField extends BaseField {
   type: "texture";
   label: "Textures";
-  value: Record<string, p5.Image | null>;
+  value: Record<string, string | null>;
 }
 
 export type ZoomData = {
@@ -89,4 +88,9 @@ export interface SceneSettings {
   objects: SceneObjects;
   general: GeneralSettings;
   cameraInfo: CameraInfo;
+}
+
+export interface RecordingSettings {
+  fps: number;
+  totalFrames: number;
 }
