@@ -7,6 +7,7 @@ import { getScene } from "../scenes/sceneList";
 export default function downloadGif(
   sceneSelection: string,
   sceneSettings: SceneSettings,
+  cameraCoordinates: number[],
   height: number,
   width: number
 ) {
@@ -39,18 +40,7 @@ export default function downloadGif(
       p.frameRate(300);
       p.noStroke();
       p.normalMaterial();
-      // use the saved camera coordinates from the scene settings
-      p.camera(
-        sceneSettings.cameraInfo.value[0],
-        sceneSettings.cameraInfo.value[1],
-        sceneSettings.cameraInfo.value[2],
-        0,
-        0,
-        0,
-        0,
-        1,
-        0
-      );
+      p.camera(...cameraCoordinates);
     };
 
     p.draw = () => {
@@ -76,7 +66,7 @@ export default function downloadGif(
         );
       }
 
-      const format = "rgb444";
+      const format = "rgb4444";
       const palette = quantize(flippedData, 64, { format });
       const index = applyPalette(flippedData, palette, format);
 

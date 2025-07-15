@@ -29,11 +29,9 @@ function App() {
   const CANVAS_HEIGHT = 350;
   const previewRef = useRef<HTMLDivElement>(null);
   const [p5Instance, setP5Instance] = useState<p5 | null>(null);
-  // consider making this usestate. see if settings will depend on this when this updates or not
+  const cameraRef = useRef<p5.Camera | null>(null);
 
   useEffect(() => {
-    let camera: p5.Camera;
-
     // move these to the scenes
     const fps = 50;
     const totalFrames = 150;
@@ -50,7 +48,7 @@ function App() {
         p.frameRate(fps);
         p.noStroke();
         p.normalMaterial();
-        camera = p.createCamera();
+        cameraRef.current = p.createCamera();
       };
 
       p.draw = () => {
@@ -109,10 +107,30 @@ function App() {
         1,
         0
       );
-      sceneSettings.cameraInfo.value = position;
     } else {
       console.warn("error setting camera position");
     }
+  };
+
+  const handleGifDownload = () => {
+    const cameraCoordinates = [
+      cameraRef.current!.eyeX,
+      cameraRef.current!.eyeY,
+      cameraRef.current!.eyeZ,
+      cameraRef.current!.centerX,
+      cameraRef.current!.centerY,
+      cameraRef.current!.centerZ,
+      cameraRef.current!.upX,
+      cameraRef.current!.upY,
+      cameraRef.current!.upZ,
+    ];
+    downloadGif(
+      sceneSelection,
+      sceneSettings,
+      cameraCoordinates,
+      CANVAS_HEIGHT,
+      CANVAS_WIDTH
+    );
   };
 
   return (
@@ -150,14 +168,7 @@ function App() {
                 mt="md"
                 fullWidth
                 w={CANVAS_WIDTH}
-                onClick={() =>
-                  downloadGif(
-                    sceneSelection,
-                    sceneSettings,
-                    CANVAS_HEIGHT,
-                    CANVAS_WIDTH
-                  )
-                }
+                onClick={handleGifDownload}
               >
                 Download GIF
               </Button>
