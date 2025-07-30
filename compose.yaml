@@ -1,0 +1,12 @@
+services:
+  3dgifs:
+    build:
+      context: .
+    restart: unless-stopped
+    networks:
+      - caddy-network
+
+networks:
+  caddy-network:
+    name: caddy-network
+    external: true

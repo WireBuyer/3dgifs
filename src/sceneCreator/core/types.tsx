@@ -43,6 +43,8 @@ export interface SliderField extends BaseField {
 export interface TextureField extends BaseField {
   type: "texture";
   label: "Textures";
+  // store the name of the surface labels
+  // if a texture is assigned store the url else store null
   value: Record<string, string | null>;
 }
 

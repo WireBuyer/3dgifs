@@ -1,4 +1,3 @@
-import p5 from "p5";
 import {
   Fields,
   AxesField,
@@ -105,10 +104,9 @@ export function createSliderField(
 /**
  * Creates a texture field with the specified texture names.
  * @param surfaces - An array of surface names to be used as keys
- * @returns
  */
 export function createTextureField(surfaces: string[]): TextureField {
-  const value: Record<string, p5.Image | null> = {};
+  const value: Record<string, string | null> = {};
   surfaces.forEach((surface) => {
     value[surface] = null;
   });
