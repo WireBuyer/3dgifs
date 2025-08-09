@@ -6,9 +6,6 @@ services:
     restart: unless-stopped
     networks:
       - caddy-network
-    deploy:
-      update_config:
-        order: start-first
 
   3dgifs-dev:
     build:
