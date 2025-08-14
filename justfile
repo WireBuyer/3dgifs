@@ -11,11 +11,10 @@ default:
 dev:
     docker compose --profile dev up --watch
 
-# Build and tag image with git hash and latest
-build:
-    docker build -t {{user}}/{{project}}:{{git_hash}} -t {{user}}/{{project}}:latest .
-
-# Push both tags to registry
+# Build for arm64 and amd64 then push both  
 push:
-    docker push {{user}}/{{project}}:{{git_hash}}
-    docker push {{user}}/{{project}}:latest
+    docker buildx build \
+        --platform linux/amd64,linux/arm64 \
+        -t {{user}}/{{project}}:{{git_hash}} \
+        -t {{user}}/{{project}}:latest \
+        --push .
