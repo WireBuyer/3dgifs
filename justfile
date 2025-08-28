@@ -14,7 +14,6 @@ dev:
 # Build for arm64 and amd64 then push both  
 push:
     docker buildx build \
-        # --target prod (uncomment later when using multi-stage)
         --platform linux/amd64,linux/arm64 \
         -t {{user}}/{{project}}:{{git_hash}} \
         -t {{user}}/{{project}}:latest \
