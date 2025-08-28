@@ -1,0 +1,10 @@
+services:
+  3dgifs:
+    image: osakasfavoritedev/3dgifs:latest
+    pull_policy: always
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: "0.2"

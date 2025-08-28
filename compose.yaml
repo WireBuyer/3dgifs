@@ -1,31 +1,5 @@
 services:
   3dgifs:
-    image: osakasfavoritedev/3dgifs:latest
-    profiles:
-      - prod
-    restart: unless-stopped
-    networks:
-      - caddy-network
-
-  3dgifs-dev:
-    build:
-      context: .
-      dockerfile: Dockerfile.dev
-    ports:
-      - "8080:5173"
-    profiles:
-      - dev
-    develop:
-      watch:
-        - action: sync
-          path: .
-          target: /app
-          ignore:
-            - node_modules/
-        - action: rebuild
-          path: package.json
-        - action: rebuild
-          path: package-lock.json
     networks:
       - caddy-network
 

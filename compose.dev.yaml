@@ -1,0 +1,21 @@
+services:
+  3dgifs:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+      # need to implement multitarget dockerfiles. use this later
+      # dockerfile: Dockerfile
+      # target: dev
+    ports:
+      - "5173:5173"
+    develop:
+      watch:
+        - action: sync
+          path: .
+          target: /app
+          ignore:
+            - node_modules/
+        - action: rebuild
+          path: package.json
+        - action: rebuild
+          path: package-lock.json
