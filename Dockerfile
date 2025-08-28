@@ -22,5 +22,4 @@ COPY --chown=nginx:nginx --from=build /app/dist /usr/share/nginx/html
 
 EXPOSE 5173
 
-ENTRYPOINT ["nginx", "-c", "/etc/nginx/nginx.conf"]
-CMD ["-g", "daemon off;"]
+CMD ["nginx", "-g", "daemon off;"] 
