@@ -17,7 +17,7 @@ FROM nginxinc/nginx-unprivileged:${NGINX_VERSION} AS production
 USER nginx
 
 # better SPA support
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY default.conf /etc/nginx/conf.d/default.conf
 COPY --chown=nginx:nginx --from=build /app/dist /usr/share/nginx/html
 
 EXPOSE 5173
